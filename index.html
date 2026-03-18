@@ -1,0 +1,551 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Kenya Projects Fund Tracker</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+:root {
+  --green: #1a6b3c;
+  --green-light: #e8f5ee;
+  --green-mid: #2d9b5a;
+  --gold: #c8922a;
+  --gold-light: #fef6e7;
+  --red: #c0392b;
+  --bg: #f9f7f4;
+  --white: #ffffff;
+  --text: #1a1a1a;
+  --text-muted: #6b6b6b;
+  --text-light: #9b9b9b;
+  --border: #e4e0db;
+  --radius: 14px;
+  --radius-sm: 8px;
+}
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body { font-family: 'DM Sans', sans-serif; background: var(--bg); color: var(--text); min-height: 100vh; }
+h1, h2, h3 { font-family: 'DM Serif Display', serif; }
+#loading-screen { position: fixed; inset: 0; background: var(--bg); display: flex; align-items: center; justify-content: center; z-index: 999; flex-direction: column; gap: 12px; }
+.spinner { width: 32px; height: 32px; border: 3px solid var(--border); border-top-color: var(--green); border-radius: 50%; animation: spin 0.8s linear infinite; }
+@keyframes spin { to { transform: rotate(360deg); } }
+.loading-text { font-size: 14px; color: var(--text-muted); }
+#auth-screen { min-height: 100vh; display: none; align-items: center; justify-content: center; padding: 20px; }
+.auth-card { background: var(--white); border-radius: var(--radius); border: 1px solid var(--border); padding: 40px 36px; width: 100%; max-width: 400px; }
+.auth-logo { text-align: center; margin-bottom: 28px; }
+.auth-logo h1 { font-size: 26px; color: var(--green); }
+.auth-logo p { font-size: 13px; color: var(--text-muted); margin-top: 4px; }
+.auth-tabs { display: flex; border: 1px solid var(--border); border-radius: var(--radius-sm); overflow: hidden; margin-bottom: 24px; }
+.auth-tab { flex: 1; padding: 10px; text-align: center; font-size: 13px; font-weight: 500; cursor: pointer; background: var(--white); color: var(--text-muted); border: none; transition: all 0.2s; font-family: 'DM Sans', sans-serif; }
+.auth-tab.active { background: var(--green); color: white; }
+.field { margin-bottom: 14px; }
+.field label { display: block; font-size: 12px; font-weight: 500; color: var(--text-muted); margin-bottom: 5px; text-transform: uppercase; letter-spacing: 0.5px; }
+.field input, .field select { width: 100%; padding: 10px 14px; border: 1px solid var(--border); border-radius: var(--radius-sm); font-size: 14px; font-family: 'DM Sans', sans-serif; background: var(--bg); color: var(--text); outline: none; transition: border 0.2s; }
+.field input:focus, .field select:focus { border-color: var(--green); }
+.btn-auth { width: 100%; padding: 12px; background: var(--green); color: white; border: none; border-radius: var(--radius-sm); font-size: 14px; font-weight: 600; font-family: 'DM Sans', sans-serif; cursor: pointer; margin-top: 6px; }
+.btn-auth:hover { opacity: 0.9; }
+.auth-hint { font-size: 12px; color: var(--text-light); text-align: center; margin-top: 16px; }
+.auth-hint span { color: var(--green); font-weight: 500; }
+.auth-error { font-size: 13px; color: var(--red); text-align: center; margin-top: 10px; display: none; }
+#app { display: none; }
+nav { background: var(--white); border-bottom: 1px solid var(--border); padding: 0 20px; display: flex; align-items: center; justify-content: space-between; height: 56px; position: sticky; top: 0; z-index: 100; }
+.nav-logo { font-family: 'DM Serif Display', serif; font-size: 18px; color: var(--green); }
+.nav-right { display: flex; align-items: center; gap: 12px; }
+.nav-user { font-size: 13px; color: var(--text-muted); }
+.nav-badge { font-size: 11px; padding: 3px 10px; border-radius: 20px; font-weight: 500; }
+.nav-badge.admin { background: var(--green-light); color: var(--green); }
+.nav-badge.donor { background: var(--gold-light); color: var(--gold); }
+.btn-logout { font-size: 13px; padding: 6px 14px; border: 1px solid var(--border); border-radius: var(--radius-sm); background: transparent; cursor: pointer; color: var(--text-muted); font-family: 'DM Sans', sans-serif; }
+.page { display: none; padding: 24px 20px; max-width: 780px; margin: 0 auto; }
+.page.active { display: block; }
+.admin-tabs { display: flex; gap: 6px; margin-bottom: 24px; overflow-x: auto; padding-bottom: 2px; }
+.admin-tab { padding: 8px 16px; border-radius: 20px; border: 1px solid var(--border); background: var(--white); font-size: 13px; font-weight: 500; cursor: pointer; color: var(--text-muted); white-space: nowrap; font-family: 'DM Sans', sans-serif; transition: all 0.2s; }
+.admin-tab.active { background: var(--green); color: white; border-color: var(--green); }
+.stats-grid { display: grid; grid-template-columns: repeat(3, minmax(0,1fr)); gap: 12px; margin-bottom: 24px; }
+.stat-card { background: var(--white); border: 1px solid var(--border); border-radius: var(--radius); padding: 16px; }
+.stat-label { font-size: 12px; color: var(--text-muted); font-weight: 500; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 6px; }
+.stat-value { font-size: 24px; font-family: 'DM Serif Display', serif; }
+.stat-value.green { color: var(--green); }
+.stat-value.gold { color: var(--gold); }
+.section-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 14px; }
+.section-title { font-size: 18px; }
+.btn-add { padding: 8px 16px; background: var(--green); color: white; border: none; border-radius: var(--radius-sm); font-size: 13px; font-weight: 500; cursor: pointer; font-family: 'DM Sans', sans-serif; }
+.project-card { background: var(--white); border: 1px solid var(--border); border-radius: var(--radius); padding: 18px; margin-bottom: 12px; }
+.project-card-top { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 8px; }
+.project-name { font-size: 16px; font-family: 'DM Serif Display', serif; }
+.project-location { font-size: 12px; color: var(--text-muted); margin-top: 2px; }
+.project-right { text-align: right; }
+.project-raised { font-size: 16px; font-weight: 600; color: var(--green); }
+.project-goal { font-size: 12px; color: var(--text-muted); }
+.progress-bar { height: 6px; background: var(--bg); border-radius: 3px; margin: 10px 0; overflow: hidden; }
+.progress-fill { height: 100%; border-radius: 3px; background: var(--green-mid); }
+.progress-fill.complete { background: var(--green); }
+.project-footer { display: flex; justify-content: space-between; align-items: center; }
+.project-meta { font-size: 12px; color: var(--text-muted); }
+.btn-sm { font-size: 12px; padding: 5px 12px; border: 1px solid var(--border); border-radius: var(--radius-sm); background: transparent; cursor: pointer; color: var(--text); font-family: 'DM Sans', sans-serif; }
+.btn-sm:hover { background: var(--bg); }
+.table-wrap { background: var(--white); border: 1px solid var(--border); border-radius: var(--radius); overflow: hidden; }
+.table-top { display: flex; justify-content: space-between; align-items: center; padding: 14px 16px; border-bottom: 1px solid var(--border); }
+.table-top-title { font-size: 14px; font-weight: 500; }
+.btn-export { font-size: 12px; padding: 6px 14px; border: 1px solid var(--border); border-radius: var(--radius-sm); background: transparent; cursor: pointer; font-family: 'DM Sans', sans-serif; }
+table { width: 100%; border-collapse: collapse; font-size: 13px; }
+th { text-align: left; padding: 10px 16px; font-size: 11px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; color: var(--text-muted); border-bottom: 1px solid var(--border); background: var(--bg); }
+td { padding: 12px 16px; border-bottom: 1px solid var(--border); }
+tr:last-child td { border-bottom: none; }
+tr:hover td { background: var(--bg); }
+.amount-pill { display: inline-block; background: var(--green-light); color: var(--green); border-radius: 20px; padding: 3px 10px; font-size: 12px; font-weight: 500; }
+.form-card { background: var(--white); border: 1px solid var(--border); border-radius: var(--radius); padding: 20px; margin-bottom: 20px; }
+.form-card h3 { font-size: 16px; margin-bottom: 16px; }
+.form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+.form-actions { display: flex; gap: 10px; margin-top: 16px; }
+.btn-cancel { flex: 1; padding: 10px; border: 1px solid var(--border); border-radius: var(--radius-sm); background: transparent; cursor: pointer; font-size: 13px; color: var(--text-muted); font-family: 'DM Sans', sans-serif; }
+.btn-submit { flex: 2; padding: 10px; border: none; border-radius: var(--radius-sm); background: var(--green); color: white; cursor: pointer; font-size: 13px; font-weight: 600; font-family: 'DM Sans', sans-serif; }
+.btn-submit:disabled { opacity: 0.6; cursor: not-allowed; }
+.donor-hero { text-align: center; padding: 36px 20px; background: var(--green); border-radius: var(--radius); margin-bottom: 24px; color: white; }
+.donor-hero-tag { display: inline-block; font-size: 11px; font-weight: 600; background: rgba(255,255,255,0.2); padding: 4px 14px; border-radius: 20px; margin-bottom: 14px; letter-spacing: 1px; text-transform: uppercase; }
+.donor-hero h1 { font-size: 28px; margin-bottom: 10px; }
+.donor-hero p { font-size: 14px; opacity: 0.85; max-width: 400px; margin: 0 auto 20px; line-height: 1.6; }
+.donor-hero-stats { display: flex; justify-content: center; gap: 32px; }
+.donor-stat-num { font-size: 22px; font-family: 'DM Serif Display', serif; }
+.donor-stat-label { font-size: 11px; opacity: 0.75; text-transform: uppercase; letter-spacing: 0.5px; }
+.donor-project-card { background: var(--white); border: 1px solid var(--border); border-radius: var(--radius); margin-bottom: 14px; overflow: hidden; }
+.donor-project-bar { height: 5px; }
+.donor-project-body { padding: 18px; }
+.donor-project-top { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 8px; }
+.donor-project-name { font-size: 16px; font-family: 'DM Serif Display', serif; }
+.location-tag { font-size: 11px; background: var(--bg); color: var(--text-muted); padding: 3px 10px; border-radius: 20px; font-weight: 500; }
+.donor-project-desc { font-size: 13px; color: var(--text-muted); line-height: 1.6; margin-bottom: 14px; }
+.donor-progress-row { display: flex; justify-content: space-between; margin-bottom: 6px; }
+.donor-raised { font-size: 15px; font-weight: 600; color: var(--green); }
+.donor-goal-text { font-size: 13px; color: var(--text-muted); }
+.donor-footer { display: flex; justify-content: space-between; align-items: center; margin-top: 12px; }
+.donor-meta { font-size: 12px; color: var(--text-muted); }
+.btn-give { padding: 9px 22px; background: var(--green); color: white; border: none; border-radius: var(--radius-sm); font-size: 13px; font-weight: 600; cursor: pointer; font-family: 'DM Sans', sans-serif; }
+.btn-give:disabled { background: var(--border); color: var(--text-muted); cursor: default; }
+.how-grid { display: grid; grid-template-columns: repeat(3, minmax(0,1fr)); gap: 12px; margin: 16px 0 24px; }
+.how-card { background: var(--white); border: 1px solid var(--border); border-radius: var(--radius); padding: 16px; text-align: center; }
+.how-num { font-size: 24px; font-family: 'DM Serif Display', serif; color: var(--green); margin-bottom: 4px; }
+.how-label { font-size: 12px; color: var(--text-muted); line-height: 1.5; }
+.trust-row { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 24px; }
+.trust-badge { font-size: 12px; background: var(--white); border: 1px solid var(--border); color: var(--text-muted); padding: 6px 14px; border-radius: 20px; }
+.overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.5); z-index: 200; align-items: center; justify-content: center; padding: 20px; }
+.overlay.show { display: flex; }
+.modal { background: var(--white); border-radius: var(--radius); padding: 24px; width: 100%; max-width: 380px; }
+.modal h3 { font-size: 18px; margin-bottom: 4px; }
+.modal-sub { font-size: 13px; color: var(--text-muted); margin-bottom: 18px; }
+.amount-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin-bottom: 14px; }
+.amount-btn { padding: 10px; border: 1px solid var(--border); border-radius: var(--radius-sm); background: var(--white); font-size: 14px; font-weight: 500; cursor: pointer; font-family: 'DM Sans', sans-serif; }
+.amount-btn.selected { background: var(--green-light); border-color: var(--green); color: var(--green); }
+.success-content { text-align: center; padding: 10px 0; }
+.success-icon { width: 52px; height: 52px; background: var(--green-light); border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 14px; font-size: 22px; color: var(--green); font-weight: bold; }
+.success-title { font-size: 20px; font-family: 'DM Serif Display', serif; margin-bottom: 6px; }
+.success-text { font-size: 13px; color: var(--text-muted); line-height: 1.6; margin-bottom: 20px; }
+.empty-state { text-align: center; padding: 32px; color: var(--text-muted); font-size: 13px; }
+.toast { position: fixed; bottom: 24px; right: 24px; background: var(--text); color: white; padding: 12px 20px; border-radius: var(--radius-sm); font-size: 13px; z-index: 999; opacity: 0; transition: opacity 0.3s; pointer-events: none; }
+.toast.show { opacity: 1; }
+@media(max-width:520px) { .stats-grid { grid-template-columns:1fr 1fr; } .form-row { grid-template-columns:1fr; } .donor-hero-stats { gap:20px; } .how-grid { grid-template-columns:1fr; } }
+</style>
+</head>
+<body>
+
+<div id="loading-screen">
+  <div class="spinner"></div>
+  <div class="loading-text">Loading Kenya Projects...</div>
+</div>
+
+<div id="auth-screen">
+  <div class="auth-card">
+    <div class="auth-logo">
+      <h1>Kenya Projects</h1>
+      <p>Fund Tracker & Donor Portal</p>
+    </div>
+    <div class="auth-tabs">
+      <button class="auth-tab active" onclick="setAuthTab('login')">Sign in</button>
+      <button class="auth-tab" onclick="setAuthTab('register')">Register</button>
+    </div>
+    <div id="login-form">
+      <div class="field"><label>Email</label><input type="email" id="login-email" placeholder="your@email.com"></div>
+      <div class="field"><label>Password</label><input type="password" id="login-pass" placeholder="••••••••"></div>
+      <button class="btn-auth" onclick="login()">Sign in</button>
+      <div class="auth-hint">Admin: <span>admin@kenya.org</span> / <span>admin123</span><br>Donors: register a new account</div>
+    </div>
+    <div id="register-form" style="display:none">
+      <div class="field"><label>Full name</label><input type="text" id="reg-name" placeholder="Your name"></div>
+      <div class="field"><label>Email</label><input type="email" id="reg-email" placeholder="your@email.com"></div>
+      <div class="field"><label>Password</label><input type="password" id="reg-pass" placeholder="Choose a password"></div>
+      <button class="btn-auth" onclick="register()">Create account</button>
+    </div>
+    <div class="auth-error" id="auth-error"></div>
+  </div>
+</div>
+
+<div id="app">
+  <nav>
+    <div class="nav-logo">Kenya Projects</div>
+    <div class="nav-right">
+      <span class="nav-user" id="nav-user"></span>
+      <span class="nav-badge" id="nav-badge"></span>
+      <button class="btn-logout" onclick="logout()">Sign out</button>
+    </div>
+  </nav>
+
+  <div class="page active" id="admin-page">
+    <div class="admin-tabs">
+      <button class="admin-tab active" onclick="showAdminTab('dashboard')">Dashboard</button>
+      <button class="admin-tab" onclick="showAdminTab('projects')">Projects</button>
+      <button class="admin-tab" onclick="showAdminTab('donors')">Donors</button>
+      <button class="admin-tab" onclick="showAdminTab('add-donation')">+ Add Donation</button>
+      <button class="admin-tab" onclick="showAdminTab('add-project')">+ New Project</button>
+    </div>
+    <div id="tab-dashboard">
+      <div class="stats-grid" id="admin-stats"></div>
+      <div class="section-header"><h2 class="section-title">All projects</h2></div>
+      <div id="admin-projects-dash"></div>
+    </div>
+    <div id="tab-projects" style="display:none">
+      <div class="section-header"><h2 class="section-title">Projects</h2><button class="btn-add" onclick="showAdminTab('add-project')">+ New project</button></div>
+      <div id="admin-projects-list"></div>
+    </div>
+    <div id="tab-donors" style="display:none">
+      <div class="table-wrap">
+        <div class="table-top"><span class="table-top-title">All donors</span><button class="btn-export" onclick="exportCSV()">Export CSV</button></div>
+        <table><thead><tr><th>Name</th><th>Project</th><th>Amount</th><th>Date</th></tr></thead><tbody id="donor-tbody"></tbody></table>
+      </div>
+    </div>
+    <div id="tab-add-donation" style="display:none">
+      <div class="form-card">
+        <h3>Record a donation</h3>
+        <div class="form-row">
+          <div class="field"><label>Donor name</label><input type="text" id="d-name" placeholder="Full name"></div>
+          <div class="field"><label>Amount (USD)</label><input type="number" id="d-amount" placeholder="0" min="1"></div>
+        </div>
+        <div class="field"><label>Project</label><select id="d-project"></select></div>
+        <div class="field"><label>Date</label><input type="date" id="d-date"></div>
+        <div class="form-actions">
+          <button class="btn-cancel" onclick="showAdminTab('dashboard')">Cancel</button>
+          <button class="btn-submit" id="btn-save-donation" onclick="addDonation()">Save donation</button>
+        </div>
+      </div>
+    </div>
+    <div id="tab-add-project" style="display:none">
+      <div class="form-card">
+        <h3>Add a new project</h3>
+        <div class="field"><label>Project name</label><input type="text" id="p-name" placeholder="e.g. School building — Nairobi"></div>
+        <div class="form-row">
+          <div class="field"><label>Location in Kenya</label><input type="text" id="p-location" placeholder="e.g. Nairobi"></div>
+          <div class="field"><label>Funding goal (USD)</label><input type="number" id="p-goal" placeholder="0" min="1"></div>
+        </div>
+        <div class="field"><label>Description</label><input type="text" id="p-desc" placeholder="Brief description of the project"></div>
+        <div class="form-actions">
+          <button class="btn-cancel" onclick="showAdminTab('dashboard')">Cancel</button>
+          <button class="btn-submit" id="btn-save-project" onclick="addProject()">Add project</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="page" id="donor-page">
+    <div class="donor-hero">
+      <div class="donor-hero-tag">Kenya Community Projects</div>
+      <h1>Help transform lives in Kenya</h1>
+      <p>Every dollar goes directly to projects bringing clean water, education, and healthcare to communities in need.</p>
+      <div class="donor-hero-stats">
+        <div><div class="donor-stat-num" id="hero-raised">$0</div><div class="donor-stat-label">Raised</div></div>
+        <div><div class="donor-stat-num" id="hero-donors">0</div><div class="donor-stat-label">Donors</div></div>
+        <div><div class="donor-stat-num" id="hero-projects">0</div><div class="donor-stat-label">Projects</div></div>
+      </div>
+    </div>
+    <h2 class="section-title" style="margin-bottom:14px">Choose a project to support</h2>
+    <div id="donor-projects"></div>
+    <div style="margin:24px 0 14px"><h2 class="section-title">How it works</h2></div>
+    <div class="how-grid">
+      <div class="how-card"><div class="how-num">1</div><div class="how-label">Pick a project you care about</div></div>
+      <div class="how-card"><div class="how-num">2</div><div class="how-label">Choose your gift amount</div></div>
+      <div class="how-card"><div class="how-num">3</div><div class="how-label">100% goes to the project</div></div>
+    </div>
+    <h2 class="section-title" style="margin-bottom:10px">Why trust us</h2>
+    <div class="trust-row">
+      <span class="trust-badge">100% to projects</span>
+      <span class="trust-badge">Regular updates</span>
+      <span class="trust-badge">Photos & reports</span>
+      <span class="trust-badge">Community verified</span>
+    </div>
+  </div>
+</div>
+
+<div class="overlay" id="donation-overlay">
+  <div class="modal" id="donation-modal-content"></div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+const SB_URL = 'https://pvoecyssjsnwhmzryain.supabase.co';
+const SB_KEY = 'sb_publishable_hzRNtbOL2Sa0x330o-30BQ_L6LCxLQ3';
+const ADMIN_EMAIL = 'admin@kenya.org';
+const ADMIN_PASS = 'admin123';
+
+let currentUser = null;
+let projects = [];
+let donors = [];
+let selAmount = null;
+let selProjectId = null;
+
+async function sb(path, method='GET', body=null) {
+  const opts = { method, headers: { 'apikey': SB_KEY, 'Authorization': 'Bearer ' + SB_KEY, 'Content-Type': 'application/json', 'Prefer': method==='POST'?'return=representation':'' } };
+  if(body) opts.body = JSON.stringify(body);
+  const res = await fetch(SB_URL + '/rest/v1/' + path, opts);
+  const text = await res.text();
+  if(!res.ok) throw new Error(text);
+  return text ? JSON.parse(text) : [];
+}
+
+async function loadData() {
+  [projects, donors] = await Promise.all([
+    sb('projects?select=*&order=created_at.asc'),
+    sb('donors?select=*&order=created_at.desc')
+  ]);
+}
+
+function toast(msg) {
+  const t = document.getElementById('toast');
+  t.textContent = msg; t.classList.add('show');
+  setTimeout(() => t.classList.remove('show'), 3000);
+}
+
+function showErr(msg) {
+  const el = document.getElementById('auth-error');
+  el.textContent = msg; el.style.display = 'block';
+}
+
+function setAuthTab(tab) {
+  document.querySelectorAll('.auth-tab').forEach((t,i) => t.classList.toggle('active', i===(tab==='login'?0:1)));
+  document.getElementById('login-form').style.display = tab==='login'?'block':'none';
+  document.getElementById('register-form').style.display = tab==='register'?'block':'none';
+  document.getElementById('auth-error').style.display = 'none';
+}
+
+function login() {
+  const email = document.getElementById('login-email').value.trim().toLowerCase();
+  const pass = document.getElementById('login-pass').value;
+  if(!email||!pass) { showErr('Please fill in all fields'); return; }
+  if(email===ADMIN_EMAIL && pass===ADMIN_PASS) { currentUser={email,name:'Admin',role:'admin'}; launchApp(); }
+  else showErr('Invalid credentials. Donors please register.');
+}
+
+function register() {
+  const name = document.getElementById('reg-name').value.trim();
+  const email = document.getElementById('reg-email').value.trim().toLowerCase();
+  const pass = document.getElementById('reg-pass').value;
+  if(!name||!email||!pass) { showErr('Please fill in all fields'); return; }
+  if(email===ADMIN_EMAIL) { showErr('This email is reserved'); return; }
+  currentUser = {email, name, role:'donor'}; launchApp();
+}
+
+async function launchApp() {
+  document.getElementById('auth-screen').style.display = 'none';
+  document.getElementById('loading-screen').style.display = 'flex';
+  try { await loadData(); } catch(e) { alert('Could not connect to database: ' + e.message); return; }
+  document.getElementById('loading-screen').style.display = 'none';
+  document.getElementById('app').style.display = 'block';
+  document.getElementById('nav-user').textContent = currentUser.name;
+  const badge = document.getElementById('nav-badge');
+  badge.textContent = currentUser.role==='admin'?'Admin':'Donor';
+  badge.className = 'nav-badge ' + currentUser.role;
+  if(currentUser.role==='admin') {
+    document.getElementById('admin-page').classList.add('active');
+    document.getElementById('donor-page').classList.remove('active');
+    renderStats(); renderDashProjects(); populateSel();
+  } else {
+    document.getElementById('donor-page').classList.add('active');
+    document.getElementById('admin-page').classList.remove('active');
+    renderDonorView();
+  }
+}
+
+function logout() {
+  currentUser = null;
+  document.getElementById('app').style.display = 'none';
+  document.getElementById('auth-screen').style.display = 'flex';
+  document.getElementById('login-email').value='';
+  document.getElementById('login-pass').value='';
+  document.getElementById('auth-error').style.display='none';
+  setAuthTab('login');
+}
+
+function showAdminTab(tab) {
+  ['dashboard','projects','donors','add-donation','add-project'].forEach(t => document.getElementById('tab-'+t).style.display=t===tab?'block':'none');
+  document.querySelectorAll('.admin-tab').forEach((el,i) => el.classList.toggle('active',['dashboard','projects','donors','add-donation','add-project'][i]===tab));
+  if(tab==='donors') renderDonorTable();
+  if(tab==='add-donation') { populateSel(); document.getElementById('d-date').value=new Date().toISOString().split('T')[0]; }
+  if(tab==='projects') renderProjectsList();
+}
+
+const colorMap = {water:'#3b82f6',school:'#2d9b5a',medical:'#c8922a',default:'#8b5cf6'};
+
+function renderStats() {
+  const raised = projects.reduce((s,p)=>s+(p.raised||0),0);
+  const goal = projects.reduce((s,p)=>s+p.goal,0);
+  document.getElementById('admin-stats').innerHTML = `
+    <div class="stat-card"><div class="stat-label">Total raised</div><div class="stat-value green">$${raised.toLocaleString()}</div></div>
+    <div class="stat-card"><div class="stat-label">Funding goal</div><div class="stat-value gold">$${goal.toLocaleString()}</div></div>
+    <div class="stat-card"><div class="stat-label">Total donors</div><div class="stat-value">${donors.length}</div></div>
+  `;
+}
+
+function pCard(p) {
+  const pct = Math.min(100, Math.round(((p.raised||0)/p.goal)*100));
+  const dc = donors.filter(d=>d.project_id===p.id).length;
+  return `<div class="project-card">
+    <div class="project-card-top">
+      <div><div class="project-name">${p.name}</div><div class="project-location">${p.location}, Kenya</div></div>
+      <div class="project-right"><div class="project-raised">$${(p.raised||0).toLocaleString()}</div><div class="project-goal">of $${p.goal.toLocaleString()}</div></div>
+    </div>
+    <div class="progress-bar"><div class="progress-fill ${pct>=100?'complete':''}" style="width:${pct}%"></div></div>
+    <div class="project-footer"><div class="project-meta">${dc} donor${dc!==1?'s':''} · ${pct}% funded</div>
+    <div><button class="btn-sm" onclick="viewProjectDonors(${p.id})">View donors</button></div></div>
+  </div>`;
+}
+
+function renderDashProjects() { document.getElementById('admin-projects-dash').innerHTML = projects.map(pCard).join('')||'<div class="empty-state">No projects yet</div>'; }
+function renderProjectsList() { document.getElementById('admin-projects-list').innerHTML = projects.map(pCard).join('')||'<div class="empty-state">No projects yet</div>'; }
+
+function viewProjectDonors(id) { showAdminTab('donors'); renderDonorTable(id); }
+
+function renderDonorTable(filter) {
+  const list = filter ? donors.filter(d=>d.project_id===filter) : donors;
+  document.getElementById('donor-tbody').innerHTML = list.map(d => {
+    const proj = projects.find(p=>p.id===d.project_id);
+    return `<tr><td>${d.name}</td><td>${proj?proj.name:'Unknown'}</td><td><span class="amount-pill">$${d.amount.toLocaleString()}</span></td><td>${d.date}</td></tr>`;
+  }).join('')||'<tr><td colspan="4" class="empty-state">No donations yet</td></tr>';
+}
+
+function populateSel() {
+  const s = document.getElementById('d-project');
+  if(s) s.innerHTML = projects.map(p=>`<option value="${p.id}">${p.name}</option>`).join('');
+}
+
+async function addDonation() {
+  const name = document.getElementById('d-name').value.trim();
+  const amount = parseFloat(document.getElementById('d-amount').value);
+  const pid = parseInt(document.getElementById('d-project').value);
+  const date = document.getElementById('d-date').value;
+  if(!name||!amount||!date) { alert('Please fill in all fields'); return; }
+  const btn = document.getElementById('btn-save-donation');
+  btn.disabled=true; btn.textContent='Saving...';
+  try {
+    const proj = projects.find(p=>p.id===pid);
+    await sb('donors','POST',{name,project_id:pid,amount,date});
+    await sb('projects?id=eq.'+pid,'PATCH',{raised:(proj?.raised||0)+amount});
+    await loadData();
+    renderStats(); renderDashProjects(); populateSel();
+    document.getElementById('d-name').value=''; document.getElementById('d-amount').value='';
+    showAdminTab('dashboard'); toast('Donation saved successfully!');
+  } catch(e) { alert('Error: '+e.message); }
+  btn.disabled=false; btn.textContent='Save donation';
+}
+
+async function addProject() {
+  const name = document.getElementById('p-name').value.trim();
+  const location = document.getElementById('p-location').value.trim();
+  const goal = parseFloat(document.getElementById('p-goal').value);
+  const desc = document.getElementById('p-desc').value.trim();
+  if(!name||!location||!goal) { alert('Please fill in all fields'); return; }
+  const btn = document.getElementById('btn-save-project');
+  btn.disabled=true; btn.textContent='Saving...';
+  try {
+    await sb('projects','POST',{name,location,goal,raised:0,description:desc||'No description.',color:'default'});
+    await loadData();
+    renderStats(); renderDashProjects(); populateSel();
+    document.getElementById('p-name').value=''; document.getElementById('p-location').value=''; document.getElementById('p-goal').value=''; document.getElementById('p-desc').value='';
+    showAdminTab('dashboard'); toast('Project added!');
+  } catch(e) { alert('Error: '+e.message); }
+  btn.disabled=false; btn.textContent='Add project';
+}
+
+function exportCSV() {
+  const rows=[['Donor Name','Project','Amount (USD)','Date']];
+  donors.forEach(d=>{const p=projects.find(x=>x.id===d.project_id); rows.push([d.name,p?p.name:'',d.amount,d.date]);});
+  const csv=rows.map(r=>r.map(c=>`"${c}"`).join(',')).join('\n');
+  const a=document.createElement('a'); a.href=URL.createObjectURL(new Blob([csv],{type:'text/csv'})); a.download='kenya-donations.csv'; a.click();
+}
+
+function renderDonorView() {
+  const raised = projects.reduce((s,p)=>s+(p.raised||0),0);
+  document.getElementById('hero-raised').textContent = '$'+raised.toLocaleString();
+  document.getElementById('hero-donors').textContent = donors.length;
+  document.getElementById('hero-projects').textContent = projects.length;
+  document.getElementById('donor-projects').innerHTML = projects.map(p=>{
+    const pct=Math.min(100,Math.round(((p.raised||0)/p.goal)*100));
+    const full=pct>=100;
+    const color=colorMap[p.color]||colorMap.default;
+    return `<div class="donor-project-card">
+      <div class="donor-project-bar" style="background:${color}"></div>
+      <div class="donor-project-body">
+        <div class="donor-project-top"><div class="donor-project-name">${p.name}</div><span class="location-tag">${p.location}</span></div>
+        <p class="donor-project-desc">${p.description||''}</p>
+        <div class="donor-progress-row"><span class="donor-raised">$${(p.raised||0).toLocaleString()} raised</span><span class="donor-goal-text">of $${p.goal.toLocaleString()}</span></div>
+        <div class="progress-bar"><div class="progress-fill ${full?'complete':''}" style="width:${pct}%;background:${color}"></div></div>
+        <div class="donor-footer"><span class="donor-meta">${pct}% funded${full?' · Fully funded!':''}</span>
+        <button class="btn-give" onclick="openModal(${p.id})" ${full?'disabled':''}>${full?'Fully funded':'Give to this'}</button></div>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+function openModal(pid) {
+  selAmount=null; selProjectId=pid;
+  const proj=projects.find(p=>p.id===pid);
+  document.getElementById('donation-modal-content').innerHTML=`
+    <h3>Give to ${proj.name}</h3>
+    <p class="modal-sub">${proj.location}, Kenya</p>
+    <div class="amount-grid">${[25,50,100,250,500,'Other'].map(a=>`<button class="amount-btn" onclick="pickAmt(this,${typeof a==='number'?a:'null'})">${typeof a==='number'?'$'+a:a}</button>`).join('')}</div>
+    <div id="custom-wrap" style="display:none" class="field"><label>Custom amount (USD)</label><input type="number" id="custom-amt" placeholder="Enter amount" min="1"></div>
+    <div class="field"><label>Your name</label><input type="text" id="modal-name" placeholder="Full name" value="${currentUser?.name||''}"></div>
+    <div class="form-actions">
+      <button class="btn-cancel" onclick="closeModal()">Cancel</button>
+      <button class="btn-submit" id="btn-confirm" onclick="confirmDonation()">Confirm gift</button>
+    </div>`;
+  document.getElementById('donation-overlay').classList.add('show');
+}
+
+function pickAmt(btn,amount) {
+  document.querySelectorAll('.amount-btn').forEach(b=>b.classList.remove('selected'));
+  btn.classList.add('selected'); selAmount=amount;
+  document.getElementById('custom-wrap').style.display=amount===null?'block':'none';
+}
+
+function closeModal() { document.getElementById('donation-overlay').classList.remove('show'); }
+
+async function confirmDonation() {
+  const name = document.getElementById('modal-name')?.value?.trim();
+  const custom = document.getElementById('custom-amt')?.value;
+  const amount = selAmount!==null ? selAmount : parseFloat(custom);
+  if(!name) { alert('Please enter your name'); return; }
+  if(!amount||amount<1) { alert('Please select or enter an amount'); return; }
+  const btn=document.getElementById('btn-confirm');
+  btn.disabled=true; btn.textContent='Saving...';
+  try {
+    const proj=projects.find(p=>p.id===selProjectId);
+    const date=new Date().toISOString().split('T')[0];
+    await sb('donors','POST',{name,project_id:selProjectId,amount,date});
+    await sb('projects?id=eq.'+selProjectId,'PATCH',{raised:(proj?.raised||0)+amount});
+    await loadData();
+    document.getElementById('donation-modal-content').innerHTML=`
+      <div class="success-content">
+        <div class="success-icon">✓</div>
+        <div class="success-title">Thank you, ${name}!</div>
+        <p class="success-text">Your gift of <strong>$${amount.toLocaleString()}</strong> to "${proj?.name}" has been saved to our database. God bless you!</p>
+        <button class="btn-submit" style="width:100%" onclick="closeModal();renderDonorView()">Done</button>
+      </div>`;
+  } catch(e) { btn.disabled=false; btn.textContent='Confirm gift'; alert('Error: '+e.message); }
+}
+
+document.getElementById('donation-overlay').addEventListener('click',function(e){if(e.target===this)closeModal();});
+
+window.addEventListener('load',()=>{
+  document.getElementById('loading-screen').style.display='none';
+  document.getElementById('auth-screen').style.display='flex';
+});
+</script>
+</body>
+</html>
