@@ -538,7 +538,7 @@ async function confirmDonation() {
         <button class="btn-submit" style="width:100%" onclick="closeModal();renderDonorView()">Done</button>
       </div>`;
   } catch(e) { btn.disabled=false; btn.textContent='Confirm gift'; alert('Error: '+e.message); }
-}
+} 
 
 document.getElementById('donation-overlay').addEventListener('click',function(e){if(e.target===this)closeModal();});
 
