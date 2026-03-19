@@ -13,6 +13,7 @@
   --gold: #c8922a;
   --gold-light: #fef6e7;
   --red: #c0392b;
+  --red-light: #fff5f5;
   --bg: #f9f7f4;
   --white: #ffffff;
   --text: #1a1a1a;
@@ -25,50 +26,63 @@
 * { box-sizing: border-box; margin: 0; padding: 0; }
 body { font-family: 'DM Sans', sans-serif; background: var(--bg); color: var(--text); min-height: 100vh; }
 h1, h2, h3 { font-family: 'DM Serif Display', serif; }
+
 #loading-screen { position: fixed; inset: 0; background: var(--bg); display: flex; align-items: center; justify-content: center; z-index: 999; flex-direction: column; gap: 12px; }
 .spinner { width: 32px; height: 32px; border: 3px solid var(--border); border-top-color: var(--green); border-radius: 50%; animation: spin 0.8s linear infinite; }
 @keyframes spin { to { transform: rotate(360deg); } }
 .loading-text { font-size: 14px; color: var(--text-muted); }
+
 #auth-screen { min-height: 100vh; display: none; align-items: center; justify-content: center; padding: 20px; }
 .auth-card { background: var(--white); border-radius: var(--radius); border: 1px solid var(--border); padding: 40px 36px; width: 100%; max-width: 400px; }
 .auth-logo { text-align: center; margin-bottom: 28px; }
 .auth-logo h1 { font-size: 26px; color: var(--green); }
 .auth-logo p { font-size: 13px; color: var(--text-muted); margin-top: 4px; }
 .auth-tabs { display: flex; border: 1px solid var(--border); border-radius: var(--radius-sm); overflow: hidden; margin-bottom: 24px; }
-.auth-tab { flex: 1; padding: 10px; text-align: center; font-size: 13px; font-weight: 500; cursor: pointer; background: var(--white); color: var(--text-muted); border: none; transition: all 0.2s; font-family: 'DM Sans', sans-serif; }
+.auth-tab { flex: 1; padding: 10px; text-align: center; font-size: 13px; font-weight: 500; cursor: pointer; background: var(--white); color: var(--text-muted); border: none; font-family: 'DM Sans', sans-serif; }
 .auth-tab.active { background: var(--green); color: white; }
 .field { margin-bottom: 14px; }
 .field label { display: block; font-size: 12px; font-weight: 500; color: var(--text-muted); margin-bottom: 5px; text-transform: uppercase; letter-spacing: 0.5px; }
-.field input, .field select { width: 100%; padding: 10px 14px; border: 1px solid var(--border); border-radius: var(--radius-sm); font-size: 14px; font-family: 'DM Sans', sans-serif; background: var(--bg); color: var(--text); outline: none; transition: border 0.2s; }
-.field input:focus, .field select:focus { border-color: var(--green); }
+.field input, .field select, .field textarea { width: 100%; padding: 10px 14px; border: 1px solid var(--border); border-radius: var(--radius-sm); font-size: 14px; font-family: 'DM Sans', sans-serif; background: var(--bg); color: var(--text); outline: none; transition: border 0.2s; }
+.field input:focus, .field select:focus, .field textarea:focus { border-color: var(--green); }
+.field textarea { resize: vertical; min-height: 80px; }
 .btn-auth { width: 100%; padding: 12px; background: var(--green); color: white; border: none; border-radius: var(--radius-sm); font-size: 14px; font-weight: 600; font-family: 'DM Sans', sans-serif; cursor: pointer; margin-top: 6px; }
 .btn-auth:hover { opacity: 0.9; }
-.auth-hint { font-size: 12px; color: var(--text-light); text-align: center; margin-top: 16px; }
+.btn-auth:disabled { opacity: 0.6; cursor: not-allowed; }
+.forgot-link { display: block; text-align: center; font-size: 12px; color: var(--green); cursor: pointer; margin-top: 12px; text-decoration: underline; }
+.auth-error { font-size: 13px; color: var(--red); text-align: center; margin-top: 10px; display: none; background: var(--red-light); padding: 10px; border-radius: var(--radius-sm); }
+.auth-success { font-size: 13px; color: var(--green); text-align: center; margin-top: 10px; display: none; background: var(--green-light); padding: 10px; border-radius: var(--radius-sm); line-height: 1.6; }
+.auth-hint { font-size: 12px; color: var(--text-light); text-align: center; margin-top: 16px; line-height: 1.6; }
 .auth-hint span { color: var(--green); font-weight: 500; }
-.auth-error { font-size: 13px; color: var(--red); text-align: center; margin-top: 10px; display: none; }
+.back-link { display: block; text-align: center; font-size: 12px; color: var(--text-muted); cursor: pointer; margin-top: 14px; }
+
 #app { display: none; }
 nav { background: var(--white); border-bottom: 1px solid var(--border); padding: 0 20px; display: flex; align-items: center; justify-content: space-between; height: 56px; position: sticky; top: 0; z-index: 100; }
 .nav-logo { font-family: 'DM Serif Display', serif; font-size: 18px; color: var(--green); }
 .nav-right { display: flex; align-items: center; gap: 12px; }
-.nav-user { font-size: 13px; color: var(--text-muted); }
+.nav-user { font-size: 13px; color: var(--text-muted); max-width: 160px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 .nav-badge { font-size: 11px; padding: 3px 10px; border-radius: 20px; font-weight: 500; }
 .nav-badge.admin { background: var(--green-light); color: var(--green); }
 .nav-badge.donor { background: var(--gold-light); color: var(--gold); }
 .btn-logout { font-size: 13px; padding: 6px 14px; border: 1px solid var(--border); border-radius: var(--radius-sm); background: transparent; cursor: pointer; color: var(--text-muted); font-family: 'DM Sans', sans-serif; }
+
 .page { display: none; padding: 24px 20px; max-width: 780px; margin: 0 auto; }
 .page.active { display: block; }
 .admin-tabs { display: flex; gap: 6px; margin-bottom: 24px; overflow-x: auto; padding-bottom: 2px; }
 .admin-tab { padding: 8px 16px; border-radius: 20px; border: 1px solid var(--border); background: var(--white); font-size: 13px; font-weight: 500; cursor: pointer; color: var(--text-muted); white-space: nowrap; font-family: 'DM Sans', sans-serif; transition: all 0.2s; }
 .admin-tab.active { background: var(--green); color: white; border-color: var(--green); }
+
 .stats-grid { display: grid; grid-template-columns: repeat(3, minmax(0,1fr)); gap: 12px; margin-bottom: 24px; }
 .stat-card { background: var(--white); border: 1px solid var(--border); border-radius: var(--radius); padding: 16px; }
 .stat-label { font-size: 12px; color: var(--text-muted); font-weight: 500; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 6px; }
 .stat-value { font-size: 24px; font-family: 'DM Serif Display', serif; }
 .stat-value.green { color: var(--green); }
 .stat-value.gold { color: var(--gold); }
+
 .section-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 14px; }
 .section-title { font-size: 18px; }
 .btn-add { padding: 8px 16px; background: var(--green); color: white; border: none; border-radius: var(--radius-sm); font-size: 13px; font-weight: 500; cursor: pointer; font-family: 'DM Sans', sans-serif; }
+.btn-add:hover { opacity: 0.9; }
+
 .project-card { background: var(--white); border: 1px solid var(--border); border-radius: var(--radius); padding: 18px; margin-bottom: 12px; }
 .project-card-top { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 8px; }
 .project-name { font-size: 16px; font-family: 'DM Serif Display', serif; }
@@ -81,8 +95,14 @@ nav { background: var(--white); border-bottom: 1px solid var(--border); padding:
 .progress-fill.complete { background: var(--green); }
 .project-footer { display: flex; justify-content: space-between; align-items: center; }
 .project-meta { font-size: 12px; color: var(--text-muted); }
+.project-actions { display: flex; gap: 6px; }
 .btn-sm { font-size: 12px; padding: 5px 12px; border: 1px solid var(--border); border-radius: var(--radius-sm); background: transparent; cursor: pointer; color: var(--text); font-family: 'DM Sans', sans-serif; }
 .btn-sm:hover { background: var(--bg); }
+.btn-sm.danger { color: var(--red); border-color: #fcc; }
+.btn-sm.danger:hover { background: var(--red-light); }
+.btn-sm.edit { color: var(--green); border-color: #9fe1cb; }
+.btn-sm.edit:hover { background: var(--green-light); }
+
 .table-wrap { background: var(--white); border: 1px solid var(--border); border-radius: var(--radius); overflow: hidden; }
 .table-top { display: flex; justify-content: space-between; align-items: center; padding: 14px 16px; border-bottom: 1px solid var(--border); }
 .table-top-title { font-size: 14px; font-weight: 500; }
@@ -93,6 +113,7 @@ td { padding: 12px 16px; border-bottom: 1px solid var(--border); }
 tr:last-child td { border-bottom: none; }
 tr:hover td { background: var(--bg); }
 .amount-pill { display: inline-block; background: var(--green-light); color: var(--green); border-radius: 20px; padding: 3px 10px; font-size: 12px; font-weight: 500; }
+
 .form-card { background: var(--white); border: 1px solid var(--border); border-radius: var(--radius); padding: 20px; margin-bottom: 20px; }
 .form-card h3 { font-size: 16px; margin-bottom: 16px; }
 .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
@@ -100,6 +121,13 @@ tr:hover td { background: var(--bg); }
 .btn-cancel { flex: 1; padding: 10px; border: 1px solid var(--border); border-radius: var(--radius-sm); background: transparent; cursor: pointer; font-size: 13px; color: var(--text-muted); font-family: 'DM Sans', sans-serif; }
 .btn-submit { flex: 2; padding: 10px; border: none; border-radius: var(--radius-sm); background: var(--green); color: white; cursor: pointer; font-size: 13px; font-weight: 600; font-family: 'DM Sans', sans-serif; }
 .btn-submit:disabled { opacity: 0.6; cursor: not-allowed; }
+.btn-delete-project { width: 100%; margin-top: 10px; padding: 10px; border: 1px solid #fcc; border-radius: var(--radius-sm); background: transparent; color: var(--red); cursor: pointer; font-size: 13px; font-family: 'DM Sans', sans-serif; }
+.btn-delete-project:hover { background: var(--red-light); }
+
+.color-picker { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 6px; }
+.color-option { width: 28px; height: 28px; border-radius: 50%; cursor: pointer; border: 3px solid transparent; transition: border 0.15s; }
+.color-option.selected { border-color: var(--text); }
+
 .donor-hero { text-align: center; padding: 36px 20px; background: var(--green); border-radius: var(--radius); margin-bottom: 24px; color: white; }
 .donor-hero-tag { display: inline-block; font-size: 11px; font-weight: 600; background: rgba(255,255,255,0.2); padding: 4px 14px; border-radius: 20px; margin-bottom: 14px; letter-spacing: 1px; text-transform: uppercase; }
 .donor-hero h1 { font-size: 28px; margin-bottom: 10px; }
@@ -107,6 +135,7 @@ tr:hover td { background: var(--bg); }
 .donor-hero-stats { display: flex; justify-content: center; gap: 32px; }
 .donor-stat-num { font-size: 22px; font-family: 'DM Serif Display', serif; }
 .donor-stat-label { font-size: 11px; opacity: 0.75; text-transform: uppercase; letter-spacing: 0.5px; }
+
 .donor-project-card { background: var(--white); border: 1px solid var(--border); border-radius: var(--radius); margin-bottom: 14px; overflow: hidden; }
 .donor-project-bar { height: 5px; }
 .donor-project-body { padding: 18px; }
@@ -121,15 +150,24 @@ tr:hover td { background: var(--bg); }
 .donor-meta { font-size: 12px; color: var(--text-muted); }
 .btn-give { padding: 9px 22px; background: var(--green); color: white; border: none; border-radius: var(--radius-sm); font-size: 13px; font-weight: 600; cursor: pointer; font-family: 'DM Sans', sans-serif; }
 .btn-give:disabled { background: var(--border); color: var(--text-muted); cursor: default; }
+
+.my-donations { background: var(--white); border: 1px solid var(--border); border-radius: var(--radius); padding: 20px; margin-bottom: 24px; }
+.my-donations h3 { font-size: 16px; margin-bottom: 14px; }
+.donation-item { display: flex; justify-content: space-between; align-items: center; padding: 10px 0; border-bottom: 1px solid var(--border); font-size: 13px; }
+.donation-item:last-child { border-bottom: none; }
+.donation-project { font-weight: 500; }
+.donation-date { color: var(--text-muted); font-size: 12px; }
+
 .how-grid { display: grid; grid-template-columns: repeat(3, minmax(0,1fr)); gap: 12px; margin: 16px 0 24px; }
 .how-card { background: var(--white); border: 1px solid var(--border); border-radius: var(--radius); padding: 16px; text-align: center; }
 .how-num { font-size: 24px; font-family: 'DM Serif Display', serif; color: var(--green); margin-bottom: 4px; }
 .how-label { font-size: 12px; color: var(--text-muted); line-height: 1.5; }
 .trust-row { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 24px; }
 .trust-badge { font-size: 12px; background: var(--white); border: 1px solid var(--border); color: var(--text-muted); padding: 6px 14px; border-radius: 20px; }
+
 .overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.5); z-index: 200; align-items: center; justify-content: center; padding: 20px; }
 .overlay.show { display: flex; }
-.modal { background: var(--white); border-radius: var(--radius); padding: 24px; width: 100%; max-width: 380px; }
+.modal { background: var(--white); border-radius: var(--radius); padding: 24px; width: 100%; max-width: 420px; max-height: 90vh; overflow-y: auto; }
 .modal h3 { font-size: 18px; margin-bottom: 4px; }
 .modal-sub { font-size: 13px; color: var(--text-muted); margin-bottom: 18px; }
 .amount-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin-bottom: 14px; }
@@ -140,6 +178,10 @@ tr:hover td { background: var(--bg); }
 .success-title { font-size: 20px; font-family: 'DM Serif Display', serif; margin-bottom: 6px; }
 .success-text { font-size: 13px; color: var(--text-muted); line-height: 1.6; margin-bottom: 20px; }
 .empty-state { text-align: center; padding: 32px; color: var(--text-muted); font-size: 13px; }
+.confirm-delete { text-align: center; padding: 10px 0; }
+.confirm-delete p { font-size: 14px; color: var(--text-muted); margin-bottom: 20px; line-height: 1.6; }
+.confirm-actions { display: flex; gap: 10px; }
+.btn-confirm-delete { flex: 1; padding: 10px; border: none; border-radius: var(--radius-sm); background: var(--red); color: white; cursor: pointer; font-size: 13px; font-weight: 600; font-family: 'DM Sans', sans-serif; }
 .toast { position: fixed; bottom: 24px; right: 24px; background: var(--text); color: white; padding: 12px 20px; border-radius: var(--radius-sm); font-size: 13px; z-index: 999; opacity: 0; transition: opacity 0.3s; pointer-events: none; }
 .toast.show { opacity: 1; }
 @media(max-width:520px) { .stats-grid { grid-template-columns:1fr 1fr; } .form-row { grid-template-columns:1fr; } .donor-hero-stats { gap:20px; } .how-grid { grid-template-columns:1fr; } }
@@ -158,23 +200,56 @@ tr:hover td { background: var(--bg); }
       <h1>Kenya Projects</h1>
       <p>Fund Tracker & Donor Portal</p>
     </div>
-    <div class="auth-tabs">
-      <button class="auth-tab active" onclick="setAuthTab('login')">Sign in</button>
-      <button class="auth-tab" onclick="setAuthTab('register')">Register</button>
-    </div>
-    <div id="login-form">
+
+    <div id="panel-login">
+      <div class="auth-tabs">
+        <button class="auth-tab active" onclick="showPanel('login')">Sign in</button>
+        <button class="auth-tab" onclick="showPanel('register')">Register</button>
+      </div>
       <div class="field"><label>Email</label><input type="email" id="login-email" placeholder="your@email.com"></div>
       <div class="field"><label>Password</label><input type="password" id="login-pass" placeholder="••••••••"></div>
-      <button class="btn-auth" onclick="login()">Sign in</button>
-      <div class="auth-hint">Admin: <span>admin@kenya.org</span> / <span>admin123</span><br>Donors: register a new account</div>
+      <button class="btn-auth" id="btn-login" onclick="login()">Sign in</button>
+      <span class="forgot-link" onclick="showPanel('forgot')">Forgot your password?</span>
+      <div class="auth-hint">Admin: <span>admin@kenya.org</span> / <span>admin123</span><br>New here? Click Register above</div>
+      <div class="auth-error" id="login-error"></div>
     </div>
-    <div id="register-form" style="display:none">
+
+    <div id="panel-register" style="display:none">
+      <div class="auth-tabs">
+        <button class="auth-tab" onclick="showPanel('login')">Sign in</button>
+        <button class="auth-tab active">Register</button>
+      </div>
       <div class="field"><label>Full name</label><input type="text" id="reg-name" placeholder="Your name"></div>
       <div class="field"><label>Email</label><input type="email" id="reg-email" placeholder="your@email.com"></div>
-      <div class="field"><label>Password</label><input type="password" id="reg-pass" placeholder="Choose a password"></div>
-      <button class="btn-auth" onclick="register()">Create account</button>
+      <div class="field"><label>Password</label><input type="password" id="reg-pass" placeholder="Min 6 characters"></div>
+      <button class="btn-auth" id="btn-register" onclick="register()">Create account</button>
+      <div class="auth-error" id="register-error"></div>
+      <div class="auth-success" id="register-success"></div>
     </div>
-    <div class="auth-error" id="auth-error"></div>
+
+    <div id="panel-forgot" style="display:none">
+      <div style="text-align:center;margin-bottom:20px">
+        <h3 style="font-size:20px;margin-bottom:6px">Reset your password</h3>
+        <p style="font-size:13px;color:var(--text-muted)">Enter your email and we'll send you a reset link</p>
+      </div>
+      <div class="field"><label>Email</label><input type="email" id="forgot-email" placeholder="your@email.com"></div>
+      <button class="btn-auth" id="btn-forgot" onclick="sendReset()">Send reset link</button>
+      <div class="auth-error" id="forgot-error"></div>
+      <div class="auth-success" id="forgot-success"></div>
+      <span class="back-link" onclick="showPanel('login')">← Back to sign in</span>
+    </div>
+
+    <div id="panel-reset" style="display:none">
+      <div style="text-align:center;margin-bottom:20px">
+        <h3 style="font-size:20px;margin-bottom:6px">Set new password</h3>
+        <p style="font-size:13px;color:var(--text-muted)">Choose a new password for your account</p>
+      </div>
+      <div class="field"><label>New password</label><input type="password" id="reset-pass" placeholder="Min 6 characters"></div>
+      <div class="field"><label>Confirm password</label><input type="password" id="reset-confirm" placeholder="Re-enter password"></div>
+      <button class="btn-auth" id="btn-reset" onclick="resetPassword()">Update password</button>
+      <div class="auth-error" id="reset-error"></div>
+      <div class="auth-success" id="reset-success"></div>
+    </div>
   </div>
 </div>
 
@@ -188,6 +263,7 @@ tr:hover td { background: var(--bg); }
     </div>
   </nav>
 
+  <!-- ADMIN PAGE -->
   <div class="page active" id="admin-page">
     <div class="admin-tabs">
       <button class="admin-tab active" onclick="showAdminTab('dashboard')">Dashboard</button>
@@ -196,21 +272,28 @@ tr:hover td { background: var(--bg); }
       <button class="admin-tab" onclick="showAdminTab('add-donation')">+ Add Donation</button>
       <button class="admin-tab" onclick="showAdminTab('add-project')">+ New Project</button>
     </div>
+
     <div id="tab-dashboard">
       <div class="stats-grid" id="admin-stats"></div>
       <div class="section-header"><h2 class="section-title">All projects</h2></div>
       <div id="admin-projects-dash"></div>
     </div>
+
     <div id="tab-projects" style="display:none">
-      <div class="section-header"><h2 class="section-title">Projects</h2><button class="btn-add" onclick="showAdminTab('add-project')">+ New project</button></div>
+      <div class="section-header">
+        <h2 class="section-title">Manage projects</h2>
+        <button class="btn-add" onclick="showAdminTab('add-project')">+ New project</button>
+      </div>
       <div id="admin-projects-list"></div>
     </div>
+
     <div id="tab-donors" style="display:none">
       <div class="table-wrap">
         <div class="table-top"><span class="table-top-title">All donors</span><button class="btn-export" onclick="exportCSV()">Export CSV</button></div>
         <table><thead><tr><th>Name</th><th>Project</th><th>Amount</th><th>Date</th></tr></thead><tbody id="donor-tbody"></tbody></table>
       </div>
     </div>
+
     <div id="tab-add-donation" style="display:none">
       <div class="form-card">
         <h3>Record a donation</h3>
@@ -226,23 +309,38 @@ tr:hover td { background: var(--bg); }
         </div>
       </div>
     </div>
+
     <div id="tab-add-project" style="display:none">
       <div class="form-card">
-        <h3>Add a new project</h3>
+        <h3 id="project-form-title">Add a new project</h3>
+        <input type="hidden" id="edit-project-id">
         <div class="field"><label>Project name</label><input type="text" id="p-name" placeholder="e.g. School building — Nairobi"></div>
         <div class="form-row">
           <div class="field"><label>Location in Kenya</label><input type="text" id="p-location" placeholder="e.g. Nairobi"></div>
           <div class="field"><label>Funding goal (USD)</label><input type="number" id="p-goal" placeholder="0" min="1"></div>
         </div>
-        <div class="field"><label>Description</label><input type="text" id="p-desc" placeholder="Brief description of the project"></div>
-        <div class="form-actions">
-          <button class="btn-cancel" onclick="showAdminTab('dashboard')">Cancel</button>
-          <button class="btn-submit" id="btn-save-project" onclick="addProject()">Add project</button>
+        <div class="field"><label>Description</label><textarea id="p-desc" placeholder="Describe what this project will accomplish and who it helps..."></textarea></div>
+        <div class="field">
+          <label>Project color</label>
+          <div class="color-picker" id="color-picker">
+            <div class="color-option selected" data-color="default" style="background:#8b5cf6" onclick="selectColor(this,'default')" title="Purple"></div>
+            <div class="color-option" data-color="water" style="background:#3b82f6" onclick="selectColor(this,'water')" title="Blue — Water"></div>
+            <div class="color-option" data-color="school" style="background:#2d9b5a" onclick="selectColor(this,'school')" title="Green — Education"></div>
+            <div class="color-option" data-color="medical" style="background:#c8922a" onclick="selectColor(this,'medical')" title="Gold — Medical"></div>
+            <div class="color-option" data-color="red" style="background:#e03c3c" onclick="selectColor(this,'red')" title="Red"></div>
+            <div class="color-option" data-color="teal" style="background:#0d9488" onclick="selectColor(this,'teal')" title="Teal"></div>
+          </div>
         </div>
+        <div class="form-actions">
+          <button class="btn-cancel" id="btn-project-cancel" onclick="cancelProjectForm()">Cancel</button>
+          <button class="btn-submit" id="btn-save-project" onclick="saveProject()">Add project</button>
+        </div>
+        <button class="btn-delete-project" id="btn-delete-project" style="display:none" onclick="confirmDeleteProject()">Delete this project</button>
       </div>
     </div>
   </div>
 
+  <!-- DONOR PAGE -->
   <div class="page" id="donor-page">
     <div class="donor-hero">
       <div class="donor-hero-tag">Kenya Community Projects</div>
@@ -254,6 +352,7 @@ tr:hover td { background: var(--bg); }
         <div><div class="donor-stat-num" id="hero-projects">0</div><div class="donor-stat-label">Projects</div></div>
       </div>
     </div>
+    <div id="my-donations-section"></div>
     <h2 class="section-title" style="margin-bottom:14px">Choose a project to support</h2>
     <div id="donor-projects"></div>
     <div style="margin:24px 0 14px"><h2 class="section-title">How it works</h2></div>
@@ -272,8 +371,24 @@ tr:hover td { background: var(--bg); }
   </div>
 </div>
 
+<!-- DONATION MODAL -->
 <div class="overlay" id="donation-overlay">
   <div class="modal" id="donation-modal-content"></div>
+</div>
+
+<!-- CONFIRM DELETE MODAL -->
+<div class="overlay" id="delete-overlay">
+  <div class="modal">
+    <div class="confirm-delete">
+      <div class="success-icon" style="background:#fff5f5;color:var(--red)">!</div>
+      <h3 style="margin-bottom:10px">Delete project?</h3>
+      <p id="delete-confirm-text">This will permanently delete the project and all its donation records. This cannot be undone.</p>
+      <div class="confirm-actions">
+        <button class="btn-cancel" onclick="closeDeleteModal()">Cancel</button>
+        <button class="btn-confirm-delete" id="btn-confirm-delete" onclick="deleteProject()">Yes, delete</button>
+      </div>
+    </div>
+  </div>
 </div>
 
 <div class="toast" id="toast"></div>
@@ -281,76 +396,144 @@ tr:hover td { background: var(--bg); }
 <script>
 const SB_URL = 'https://pvoecyssjsnwhmzryain.supabase.co';
 const SB_KEY = 'sb_publishable_hzRNtbOL2Sa0x330o-30BQ_L6LCxLQ3';
+const SITE_URL = 'https://keviv2026.github.io';
 const ADMIN_EMAIL = 'admin@kenya.org';
 const ADMIN_PASS = 'admin123';
 
 let currentUser = null;
+let sbSession = null;
 let projects = [];
 let donors = [];
 let selAmount = null;
 let selProjectId = null;
+let selectedColor = 'default';
+let editingProjectId = null;
+let deletingProjectId = null;
 
-async function sb(path, method='GET', body=null) {
-  const opts = { method, headers: { 'apikey': SB_KEY, 'Authorization': 'Bearer ' + SB_KEY, 'Content-Type': 'application/json', 'Prefer': method==='POST'?'return=representation':'' } };
+const colorMap = { water:'#3b82f6', school:'#2d9b5a', medical:'#c8922a', default:'#8b5cf6', red:'#e03c3c', teal:'#0d9488' };
+
+async function sbApi(path, method='GET', body=null) {
+  const headers = { 'apikey':SB_KEY, 'Authorization':'Bearer '+(sbSession?.access_token||SB_KEY), 'Content-Type':'application/json', 'Prefer':method==='POST'?'return=representation':'' };
+  const opts = { method, headers };
   if(body) opts.body = JSON.stringify(body);
-  const res = await fetch(SB_URL + '/rest/v1/' + path, opts);
+  const res = await fetch(SB_URL+'/rest/v1/'+path, opts);
   const text = await res.text();
   if(!res.ok) throw new Error(text);
   return text ? JSON.parse(text) : [];
 }
 
+async function sbAuth(endpoint, body) {
+  const res = await fetch(SB_URL+'/auth/v1/'+endpoint, { method:'POST', headers:{'apikey':SB_KEY,'Content-Type':'application/json'}, body:JSON.stringify(body) });
+  const data = await res.json();
+  if(!res.ok) throw new Error(data.error_description||data.msg||'Auth error');
+  return data;
+}
+
 async function loadData() {
   [projects, donors] = await Promise.all([
-    sb('projects?select=*&order=created_at.asc'),
-    sb('donors?select=*&order=created_at.desc')
+    sbApi('projects?select=*&order=created_at.asc'),
+    sbApi('donors?select=*&order=created_at.desc')
   ]);
 }
 
-function toast(msg) {
+function toast(msg, isError=false) {
   const t = document.getElementById('toast');
-  t.textContent = msg; t.classList.add('show');
-  setTimeout(() => t.classList.remove('show'), 3000);
+  t.textContent = msg;
+  t.style.background = isError ? 'var(--red)' : 'var(--text)';
+  t.classList.add('show');
+  setTimeout(()=>t.classList.remove('show'), 3000);
 }
 
-function showErr(msg) {
-  const el = document.getElementById('auth-error');
-  el.textContent = msg; el.style.display = 'block';
+function showPanel(panel) {
+  ['login','register','forgot','reset'].forEach(p => document.getElementById('panel-'+p).style.display=p===panel?'block':'none');
+  ['login-error','register-error','forgot-error','reset-error','register-success','forgot-success','reset-success'].forEach(id => { const el=document.getElementById(id); if(el) el.style.display='none'; });
 }
 
-function setAuthTab(tab) {
-  document.querySelectorAll('.auth-tab').forEach((t,i) => t.classList.toggle('active', i===(tab==='login'?0:1)));
-  document.getElementById('login-form').style.display = tab==='login'?'block':'none';
-  document.getElementById('register-form').style.display = tab==='register'?'block':'none';
-  document.getElementById('auth-error').style.display = 'none';
-}
+function showErr(id, msg) { const el=document.getElementById(id); el.textContent=msg; el.style.display='block'; }
+function showSuccessMsg(id, msg) { const el=document.getElementById(id); el.textContent=msg; el.style.display='block'; }
 
-function login() {
+async function login() {
   const email = document.getElementById('login-email').value.trim().toLowerCase();
   const pass = document.getElementById('login-pass').value;
-  if(!email||!pass) { showErr('Please fill in all fields'); return; }
-  if(email===ADMIN_EMAIL && pass===ADMIN_PASS) { currentUser={email,name:'Admin',role:'admin'}; launchApp(); }
-  else showErr('Invalid credentials. Donors please register.');
+  if(!email||!pass) { showErr('login-error','Please fill in all fields'); return; }
+  const btn = document.getElementById('btn-login');
+  btn.disabled=true; btn.textContent='Signing in...';
+  try {
+    if(email===ADMIN_EMAIL && pass===ADMIN_PASS) {
+      currentUser={email,name:'Admin',role:'admin'}; sbSession=null;
+      await launchApp();
+    } else {
+      const data = await sbAuth('token?grant_type=password',{email,password:pass});
+      sbSession=data;
+      const name=data.user?.user_metadata?.full_name||email.split('@')[0];
+      currentUser={email,name,role:'donor',id:data.user.id};
+      await launchApp();
+    }
+  } catch(e) { showErr('login-error','Invalid email or password. New here? Click Register.'); }
+  btn.disabled=false; btn.textContent='Sign in';
 }
 
-function register() {
-  const name = document.getElementById('reg-name').value.trim();
-  const email = document.getElementById('reg-email').value.trim().toLowerCase();
-  const pass = document.getElementById('reg-pass').value;
-  if(!name||!email||!pass) { showErr('Please fill in all fields'); return; }
-  if(email===ADMIN_EMAIL) { showErr('This email is reserved'); return; }
-  currentUser = {email, name, role:'donor'}; launchApp();
+async function register() {
+  const name=document.getElementById('reg-name').value.trim();
+  const email=document.getElementById('reg-email').value.trim().toLowerCase();
+  const pass=document.getElementById('reg-pass').value;
+  if(!name||!email||!pass) { showErr('register-error','Please fill in all fields'); return; }
+  if(pass.length<6) { showErr('register-error','Password must be at least 6 characters'); return; }
+  if(email===ADMIN_EMAIL) { showErr('register-error','This email is reserved'); return; }
+  const btn=document.getElementById('btn-register');
+  btn.disabled=true; btn.textContent='Creating account...';
+  try {
+    await sbAuth('signup',{email,password:pass,data:{full_name:name}});
+    showSuccessMsg('register-success','Account created! Check your email to confirm, then sign in.');
+    document.getElementById('register-error').style.display='none';
+  } catch(e) { showErr('register-error',e.message||'Could not create account.'); }
+  btn.disabled=false; btn.textContent='Create account';
+}
+
+async function sendReset() {
+  const email=document.getElementById('forgot-email').value.trim().toLowerCase();
+  if(!email) { showErr('forgot-error','Please enter your email'); return; }
+  if(email===ADMIN_EMAIL) { showErr('forgot-error','Admin password cannot be reset this way'); return; }
+  const btn=document.getElementById('btn-forgot');
+  btn.disabled=true; btn.textContent='Sending...';
+  try {
+    await sbAuth('recover',{email,options:{redirectTo:SITE_URL+'/kenya-fund-tracker'}});
+    showSuccessMsg('forgot-success','Reset link sent! Check your email inbox.');
+    document.getElementById('forgot-error').style.display='none';
+    document.getElementById('forgot-email').value='';
+  } catch(e) { showErr('forgot-error',e.message||'Could not send reset email.'); }
+  btn.disabled=false; btn.textContent='Send reset link';
+}
+
+async function resetPassword() {
+  const pass=document.getElementById('reset-pass').value;
+  const confirm=document.getElementById('reset-confirm').value;
+  if(!pass||!confirm) { showErr('reset-error','Please fill in both fields'); return; }
+  if(pass.length<6) { showErr('reset-error','Password must be at least 6 characters'); return; }
+  if(pass!==confirm) { showErr('reset-error','Passwords do not match'); return; }
+  const btn=document.getElementById('btn-reset');
+  btn.disabled=true; btn.textContent='Updating...';
+  try {
+    const res=await fetch(SB_URL+'/auth/v1/user',{method:'PUT',headers:{'apikey':SB_KEY,'Authorization':'Bearer '+(sbSession?.access_token||SB_KEY),'Content-Type':'application/json'},body:JSON.stringify({password:pass})});
+    const data=await res.json();
+    if(!res.ok) throw new Error(data.msg||'Could not update password');
+    showSuccessMsg('reset-success','Password updated successfully!');
+    document.getElementById('reset-error').style.display='none';
+    setTimeout(()=>showPanel('login'),2000);
+  } catch(e) { showErr('reset-error',e.message||'Could not update password.'); }
+  btn.disabled=false; btn.textContent='Update password';
 }
 
 async function launchApp() {
-  document.getElementById('auth-screen').style.display = 'none';
-  document.getElementById('loading-screen').style.display = 'flex';
-  try { await loadData(); } catch(e) { alert('Could not connect to database: ' + e.message); return; }
-  document.getElementById('loading-screen').style.display = 'none';
-  document.getElementById('app').style.display = 'block';
-  document.getElementById('nav-user').textContent = currentUser.name;
-  const badge = document.getElementById('nav-badge');
-  badge.textContent = currentUser.role==='admin'?'Admin':'Donor';
-  badge.className = 'nav-badge ' + currentUser.role;
+  document.getElementById('auth-screen').style.display='none';
+  document.getElementById('loading-screen').style.display='flex';
+  try { await loadData(); } catch(e) { alert('Could not connect to database: '+e.message); return; }
+  document.getElementById('loading-screen').style.display='none';
+  document.getElementById('app').style.display='block';
+  document.getElementById('nav-user').textContent=currentUser.name;
+  const badge=document.getElementById('nav-badge');
+  badge.textContent=currentUser.role==='admin'?'Admin':'Donor';
+  badge.className='nav-badge '+currentUser.role;
   if(currentUser.role==='admin') {
     document.getElementById('admin-page').classList.add('active');
     document.getElementById('donor-page').classList.remove('active');
@@ -362,104 +545,184 @@ async function launchApp() {
   }
 }
 
-function logout() {
-  currentUser = null;
-  document.getElementById('app').style.display = 'none';
-  document.getElementById('auth-screen').style.display = 'flex';
-  document.getElementById('login-email').value='';
-  document.getElementById('login-pass').value='';
-  document.getElementById('auth-error').style.display='none';
-  setAuthTab('login');
+async function logout() {
+  if(sbSession) { try { await fetch(SB_URL+'/auth/v1/logout',{method:'POST',headers:{'apikey':SB_KEY,'Authorization':'Bearer '+sbSession.access_token}}); } catch(e){} }
+  currentUser=null; sbSession=null;
+  document.getElementById('app').style.display='none';
+  document.getElementById('auth-screen').style.display='flex';
+  document.getElementById('login-email').value=''; document.getElementById('login-pass').value='';
+  showPanel('login');
 }
 
 function showAdminTab(tab) {
-  ['dashboard','projects','donors','add-donation','add-project'].forEach(t => document.getElementById('tab-'+t).style.display=t===tab?'block':'none');
-  document.querySelectorAll('.admin-tab').forEach((el,i) => el.classList.toggle('active',['dashboard','projects','donors','add-donation','add-project'][i]===tab));
+  ['dashboard','projects','donors','add-donation','add-project'].forEach(t=>document.getElementById('tab-'+t).style.display=t===tab?'block':'none');
+  document.querySelectorAll('.admin-tab').forEach((el,i)=>el.classList.toggle('active',['dashboard','projects','donors','add-donation','add-project'][i]===tab));
   if(tab==='donors') renderDonorTable();
   if(tab==='add-donation') { populateSel(); document.getElementById('d-date').value=new Date().toISOString().split('T')[0]; }
   if(tab==='projects') renderProjectsList();
+  if(tab==='add-project' && !editingProjectId) resetProjectForm();
 }
 
-const colorMap = {water:'#3b82f6',school:'#2d9b5a',medical:'#c8922a',default:'#8b5cf6'};
+function selectColor(el, color) {
+  document.querySelectorAll('.color-option').forEach(o=>o.classList.remove('selected'));
+  el.classList.add('selected');
+  selectedColor = color;
+}
+
+function resetProjectForm() {
+  editingProjectId = null;
+  document.getElementById('project-form-title').textContent = 'Add a new project';
+  document.getElementById('edit-project-id').value = '';
+  document.getElementById('p-name').value = '';
+  document.getElementById('p-location').value = '';
+  document.getElementById('p-goal').value = '';
+  document.getElementById('p-desc').value = '';
+  document.getElementById('btn-save-project').textContent = 'Add project';
+  document.getElementById('btn-delete-project').style.display = 'none';
+  selectedColor = 'default';
+  document.querySelectorAll('.color-option').forEach(o => o.classList.toggle('selected', o.dataset.color==='default'));
+}
+
+function openEditProject(id) {
+  const p = projects.find(x=>x.id===id);
+  if(!p) return;
+  editingProjectId = id;
+  document.getElementById('project-form-title').textContent = 'Edit project';
+  document.getElementById('edit-project-id').value = id;
+  document.getElementById('p-name').value = p.name;
+  document.getElementById('p-location').value = p.location;
+  document.getElementById('p-goal').value = p.goal;
+  document.getElementById('p-desc').value = p.description||'';
+  document.getElementById('btn-save-project').textContent = 'Save changes';
+  document.getElementById('btn-delete-project').style.display = 'block';
+  selectedColor = p.color||'default';
+  document.querySelectorAll('.color-option').forEach(o=>o.classList.toggle('selected',o.dataset.color===selectedColor));
+  showAdminTab('add-project');
+}
+
+function cancelProjectForm() {
+  resetProjectForm();
+  showAdminTab('projects');
+}
+
+async function saveProject() {
+  const name=document.getElementById('p-name').value.trim();
+  const location=document.getElementById('p-location').value.trim();
+  const goal=parseFloat(document.getElementById('p-goal').value);
+  const desc=document.getElementById('p-desc').value.trim();
+  if(!name||!location||!goal) { alert('Please fill in name, location and goal'); return; }
+  const btn=document.getElementById('btn-save-project');
+  btn.disabled=true; btn.textContent='Saving...';
+  try {
+    if(editingProjectId) {
+      await sbApi('projects?id=eq.'+editingProjectId,'PATCH',{name,location,goal,description:desc||'No description.',color:selectedColor});
+      toast('Project updated!');
+    } else {
+      await sbApi('projects','POST',{name,location,goal,raised:0,description:desc||'No description.',color:selectedColor});
+      toast('Project added!');
+    }
+    await loadData();
+    renderStats(); renderDashProjects(); populateSel();
+    resetProjectForm();
+    showAdminTab('projects');
+  } catch(e) { toast('Error: '+e.message, true); }
+  btn.disabled=false; btn.textContent=editingProjectId?'Save changes':'Add project';
+}
+
+function confirmDeleteProject() {
+  deletingProjectId = editingProjectId;
+  const p = projects.find(x=>x.id===deletingProjectId);
+  const dc = donors.filter(d=>d.project_id===deletingProjectId).length;
+  document.getElementById('delete-confirm-text').textContent = `This will permanently delete "${p?.name}" and its ${dc} donation record${dc!==1?'s':''}. This cannot be undone.`;
+  document.getElementById('delete-overlay').classList.add('show');
+}
+
+function closeDeleteModal() {
+  document.getElementById('delete-overlay').classList.remove('show');
+  deletingProjectId = null;
+}
+
+async function deleteProject() {
+  if(!deletingProjectId) return;
+  const btn=document.getElementById('btn-confirm-delete');
+  btn.disabled=true; btn.textContent='Deleting...';
+  try {
+    await sbApi('donors?project_id=eq.'+deletingProjectId,'DELETE');
+    await sbApi('projects?id=eq.'+deletingProjectId,'DELETE');
+    await loadData();
+    renderStats(); renderDashProjects(); populateSel();
+    closeDeleteModal();
+    resetProjectForm();
+    showAdminTab('projects');
+    toast('Project deleted');
+  } catch(e) { toast('Error deleting: '+e.message, true); }
+  btn.disabled=false; btn.textContent='Yes, delete';
+}
 
 function renderStats() {
-  const raised = projects.reduce((s,p)=>s+(p.raised||0),0);
-  const goal = projects.reduce((s,p)=>s+p.goal,0);
-  document.getElementById('admin-stats').innerHTML = `
+  const raised=projects.reduce((s,p)=>s+(p.raised||0),0);
+  const goal=projects.reduce((s,p)=>s+p.goal,0);
+  document.getElementById('admin-stats').innerHTML=`
     <div class="stat-card"><div class="stat-label">Total raised</div><div class="stat-value green">$${raised.toLocaleString()}</div></div>
     <div class="stat-card"><div class="stat-label">Funding goal</div><div class="stat-value gold">$${goal.toLocaleString()}</div></div>
-    <div class="stat-card"><div class="stat-label">Total donors</div><div class="stat-value">${donors.length}</div></div>
-  `;
+    <div class="stat-card"><div class="stat-label">Total donors</div><div class="stat-value">${donors.length}</div></div>`;
 }
 
-function pCard(p) {
-  const pct = Math.min(100, Math.round(((p.raised||0)/p.goal)*100));
-  const dc = donors.filter(d=>d.project_id===p.id).length;
-  return `<div class="project-card">
+function pCard(p, showEdit=false) {
+  const pct=Math.min(100,Math.round(((p.raised||0)/p.goal)*100));
+  const dc=donors.filter(d=>d.project_id===p.id).length;
+  const color=colorMap[p.color]||colorMap.default;
+  return `<div class="project-card" style="border-left:4px solid ${color}">
     <div class="project-card-top">
       <div><div class="project-name">${p.name}</div><div class="project-location">${p.location}, Kenya</div></div>
       <div class="project-right"><div class="project-raised">$${(p.raised||0).toLocaleString()}</div><div class="project-goal">of $${p.goal.toLocaleString()}</div></div>
     </div>
-    <div class="progress-bar"><div class="progress-fill ${pct>=100?'complete':''}" style="width:${pct}%"></div></div>
-    <div class="project-footer"><div class="project-meta">${dc} donor${dc!==1?'s':''} · ${pct}% funded</div>
-    <div><button class="btn-sm" onclick="viewProjectDonors(${p.id})">View donors</button></div></div>
+    <div class="progress-bar"><div class="progress-fill ${pct>=100?'complete':''}" style="width:${pct}%;background:${color}"></div></div>
+    <div class="project-footer">
+      <div class="project-meta">${dc} donor${dc!==1?'s':''} · ${pct}% funded</div>
+      <div class="project-actions">
+        <button class="btn-sm" onclick="viewProjectDonors(${p.id})">View donors</button>
+        ${showEdit?`<button class="btn-sm edit" onclick="openEditProject(${p.id})">Edit</button>`:''}
+      </div>
+    </div>
   </div>`;
 }
 
-function renderDashProjects() { document.getElementById('admin-projects-dash').innerHTML = projects.map(pCard).join('')||'<div class="empty-state">No projects yet</div>'; }
-function renderProjectsList() { document.getElementById('admin-projects-list').innerHTML = projects.map(pCard).join('')||'<div class="empty-state">No projects yet</div>'; }
-
+function renderDashProjects() { document.getElementById('admin-projects-dash').innerHTML=projects.map(p=>pCard(p,false)).join('')||'<div class="empty-state">No projects yet — add one!</div>'; }
+function renderProjectsList() { document.getElementById('admin-projects-list').innerHTML=projects.map(p=>pCard(p,true)).join('')||'<div class="empty-state">No projects yet — add one!</div>'; }
 function viewProjectDonors(id) { showAdminTab('donors'); renderDonorTable(id); }
 
 function renderDonorTable(filter) {
-  const list = filter ? donors.filter(d=>d.project_id===filter) : donors;
-  document.getElementById('donor-tbody').innerHTML = list.map(d => {
-    const proj = projects.find(p=>p.id===d.project_id);
+  const list=filter?donors.filter(d=>d.project_id===filter):donors;
+  document.getElementById('donor-tbody').innerHTML=list.map(d=>{
+    const proj=projects.find(p=>p.id===d.project_id);
     return `<tr><td>${d.name}</td><td>${proj?proj.name:'Unknown'}</td><td><span class="amount-pill">$${d.amount.toLocaleString()}</span></td><td>${d.date}</td></tr>`;
   }).join('')||'<tr><td colspan="4" class="empty-state">No donations yet</td></tr>';
 }
 
 function populateSel() {
-  const s = document.getElementById('d-project');
-  if(s) s.innerHTML = projects.map(p=>`<option value="${p.id}">${p.name}</option>`).join('');
+  const s=document.getElementById('d-project');
+  if(s) s.innerHTML=projects.map(p=>`<option value="${p.id}">${p.name}</option>`).join('');
 }
 
 async function addDonation() {
-  const name = document.getElementById('d-name').value.trim();
-  const amount = parseFloat(document.getElementById('d-amount').value);
-  const pid = parseInt(document.getElementById('d-project').value);
-  const date = document.getElementById('d-date').value;
+  const name=document.getElementById('d-name').value.trim();
+  const amount=parseFloat(document.getElementById('d-amount').value);
+  const pid=parseInt(document.getElementById('d-project').value);
+  const date=document.getElementById('d-date').value;
   if(!name||!amount||!date) { alert('Please fill in all fields'); return; }
-  const btn = document.getElementById('btn-save-donation');
+  const btn=document.getElementById('btn-save-donation');
   btn.disabled=true; btn.textContent='Saving...';
   try {
-    const proj = projects.find(p=>p.id===pid);
-    await sb('donors','POST',{name,project_id:pid,amount,date});
-    await sb('projects?id=eq.'+pid,'PATCH',{raised:(proj?.raised||0)+amount});
+    const proj=projects.find(p=>p.id===pid);
+    await sbApi('donors','POST',{name,project_id:pid,amount,date});
+    await sbApi('projects?id=eq.'+pid,'PATCH',{raised:(proj?.raised||0)+amount});
     await loadData();
     renderStats(); renderDashProjects(); populateSel();
     document.getElementById('d-name').value=''; document.getElementById('d-amount').value='';
-    showAdminTab('dashboard'); toast('Donation saved successfully!');
-  } catch(e) { alert('Error: '+e.message); }
+    showAdminTab('dashboard'); toast('Donation saved!');
+  } catch(e) { toast('Error: '+e.message, true); }
   btn.disabled=false; btn.textContent='Save donation';
-}
-
-async function addProject() {
-  const name = document.getElementById('p-name').value.trim();
-  const location = document.getElementById('p-location').value.trim();
-  const goal = parseFloat(document.getElementById('p-goal').value);
-  const desc = document.getElementById('p-desc').value.trim();
-  if(!name||!location||!goal) { alert('Please fill in all fields'); return; }
-  const btn = document.getElementById('btn-save-project');
-  btn.disabled=true; btn.textContent='Saving...';
-  try {
-    await sb('projects','POST',{name,location,goal,raised:0,description:desc||'No description.',color:'default'});
-    await loadData();
-    renderStats(); renderDashProjects(); populateSel();
-    document.getElementById('p-name').value=''; document.getElementById('p-location').value=''; document.getElementById('p-goal').value=''; document.getElementById('p-desc').value='';
-    showAdminTab('dashboard'); toast('Project added!');
-  } catch(e) { alert('Error: '+e.message); }
-  btn.disabled=false; btn.textContent='Add project';
 }
 
 function exportCSV() {
@@ -469,12 +732,26 @@ function exportCSV() {
   const a=document.createElement('a'); a.href=URL.createObjectURL(new Blob([csv],{type:'text/csv'})); a.download='kenya-donations.csv'; a.click();
 }
 
+function renderMyDonations() {
+  if(!currentUser?.name) return '';
+  const mine=donors.filter(d=>d.name.toLowerCase()===currentUser.name.toLowerCase());
+  if(!mine.length) return '';
+  const total=mine.reduce((s,d)=>s+d.amount,0);
+  return `<div class="my-donations"><h3>Your donations</h3>
+    ${mine.map(d=>{const proj=projects.find(p=>p.id===d.project_id);
+      return `<div class="donation-item"><div><div class="donation-project">${proj?proj.name:'Unknown'}</div><div class="donation-date">${d.date}</div></div><span class="amount-pill">$${d.amount.toLocaleString()}</span></div>`;
+    }).join('')}
+    <div style="padding-top:10px;font-size:13px;color:var(--text-muted)">Total given: <strong style="color:var(--green)">$${total.toLocaleString()}</strong></div>
+  </div>`;
+}
+
 function renderDonorView() {
-  const raised = projects.reduce((s,p)=>s+(p.raised||0),0);
-  document.getElementById('hero-raised').textContent = '$'+raised.toLocaleString();
-  document.getElementById('hero-donors').textContent = donors.length;
-  document.getElementById('hero-projects').textContent = projects.length;
-  document.getElementById('donor-projects').innerHTML = projects.map(p=>{
+  const raised=projects.reduce((s,p)=>s+(p.raised||0),0);
+  document.getElementById('hero-raised').textContent='$'+raised.toLocaleString();
+  document.getElementById('hero-donors').textContent=donors.length;
+  document.getElementById('hero-projects').textContent=projects.length;
+  document.getElementById('my-donations-section').innerHTML=renderMyDonations();
+  document.getElementById('donor-projects').innerHTML=projects.map(p=>{
     const pct=Math.min(100,Math.round(((p.raised||0)/p.goal)*100));
     const full=pct>=100;
     const color=colorMap[p.color]||colorMap.default;
@@ -517,9 +794,9 @@ function pickAmt(btn,amount) {
 function closeModal() { document.getElementById('donation-overlay').classList.remove('show'); }
 
 async function confirmDonation() {
-  const name = document.getElementById('modal-name')?.value?.trim();
-  const custom = document.getElementById('custom-amt')?.value;
-  const amount = selAmount!==null ? selAmount : parseFloat(custom);
+  const name=document.getElementById('modal-name')?.value?.trim();
+  const custom=document.getElementById('custom-amt')?.value;
+  const amount=selAmount!==null?selAmount:parseFloat(custom);
   if(!name) { alert('Please enter your name'); return; }
   if(!amount||amount<1) { alert('Please select or enter an amount'); return; }
   const btn=document.getElementById('btn-confirm');
@@ -527,24 +804,36 @@ async function confirmDonation() {
   try {
     const proj=projects.find(p=>p.id===selProjectId);
     const date=new Date().toISOString().split('T')[0];
-    await sb('donors','POST',{name,project_id:selProjectId,amount,date});
-    await sb('projects?id=eq.'+selProjectId,'PATCH',{raised:(proj?.raised||0)+amount});
+    await sbApi('donors','POST',{name,project_id:selProjectId,amount,date});
+    await sbApi('projects?id=eq.'+selProjectId,'PATCH',{raised:(proj?.raised||0)+amount});
     await loadData();
     document.getElementById('donation-modal-content').innerHTML=`
       <div class="success-content">
         <div class="success-icon">✓</div>
         <div class="success-title">Thank you, ${name}!</div>
-        <p class="success-text">Your gift of <strong>$${amount.toLocaleString()}</strong> to "${proj?.name}" has been saved to our database. God bless you!</p>
+        <p class="success-text">Your gift of <strong>$${amount.toLocaleString()}</strong> to "${proj?.name}" has been saved. God bless you!</p>
         <button class="btn-submit" style="width:100%" onclick="closeModal();renderDonorView()">Done</button>
       </div>`;
-  } catch(e) { btn.disabled=false; btn.textContent='Confirm gift'; alert('Error: '+e.message); }
-} 
+  } catch(e) { btn.disabled=false; btn.textContent='Confirm gift'; toast('Error: '+e.message, true); }
+}
 
 document.getElementById('donation-overlay').addEventListener('click',function(e){if(e.target===this)closeModal();});
+document.getElementById('delete-overlay').addEventListener('click',function(e){if(e.target===this)closeDeleteModal();});
 
 window.addEventListener('load',()=>{
   document.getElementById('loading-screen').style.display='none';
+  const hash=window.location.hash;
+  if(hash.includes('type=recovery')||hash.includes('access_token')) {
+    const params=new URLSearchParams(hash.replace('#',''));
+    const token=params.get('access_token');
+    if(token && params.get('type')==='recovery') {
+      sbSession={access_token:token};
+      document.getElementById('auth-screen').style.display='flex';
+      showPanel('reset'); return;
+    }
+  }
   document.getElementById('auth-screen').style.display='flex';
+  showPanel('login');
 });
 </script>
 </body>
