@@ -363,7 +363,7 @@ tr:hover td { background: var(--bg); }
   <div id="tab-donors" style="display:none">
     <div class="table-wrap">
       <div class="table-top"><span class="table-top-title">All donations</span><button class="btn-export" onclick="exportCSV('donations')">Export CSV</button></div>
-      <table><thead><tr><th>Name</th><th>Project</th><th>Amount</th><th>Date</th></tr></thead><tbody id="donor-tbody"></tbody></table>
+      <table><thead><tr><th>Name</th><th>Email</th><th>Project</th><th>Amount</th><th>Date</th></tr></thead><tbody id="donor-tbody"></tbody></table>
     </div>
   </div>
   <div id="tab-pledges" style="display:none">
@@ -379,6 +379,7 @@ tr:hover td { background: var(--bg); }
         <div class="field"><label>Donor name</label><input type="text" id="d-name" placeholder="Full name"></div>
         <div class="field"><label>Amount (USD)</label><input type="number" id="d-amount" placeholder="0" min="1"></div>
       </div>
+      <div class="field"><label>Email</label><input type="email" id="d-email" placeholder="donor@email.com"></div>
       <div class="field"><label>Project</label><select id="d-project"></select></div>
       <div class="field"><label>Date</label><input type="date" id="d-date"></div>
       <div class="form-actions">
@@ -716,7 +717,7 @@ function renderDonorTable(filter){
   const list=filter?donors.filter(d=>d.project_id===filter):donors;
   document.getElementById('donor-tbody').innerHTML=list.map(d=>{
     const proj=projects.find(p=>p.id===d.project_id);
-    return `<tr><td>${d.name}</td><td>${proj?proj.name:'Unknown'}</td><td><span class="amount-pill">$${d.amount.toLocaleString()}</span></td><td>${d.date}</td></tr>`;
+    return `<tr><td>${d.name}</td><td>${d.email||'—'}</td><td>${proj?proj.name:'Unknown'}</td><td><span class="amount-pill">$${d.amount.toLocaleString()}</span></td><td>${d.date}</td></tr>`;
   }).join('')||'<tr><td colspan="4" class="empty-state">No donations yet</td></tr>';
 }
 
@@ -748,7 +749,8 @@ async function addDonation(){
   btn.disabled=true; btn.textContent='Saving...';
   try{
     const proj=projects.find(p=>p.id===pid);
-    await sbApi('donors','POST',{name,project_id:pid,amount,date});
+    const demail=document.getElementById('d-email')?.value?.trim()||'';
+    await sbApi('donors','POST',{name,email:demail,project_id:pid,amount,date});
     await sbApi('projects?id=eq.'+pid,'PATCH',{raised:(proj?.raised||0)+amount});
     await loadData(); renderAdminStats(); renderDashProjects(); populateSel();
     document.getElementById('d-name').value=''; document.getElementById('d-amount').value='';
@@ -760,8 +762,8 @@ async function addDonation(){
 function exportCSV(type){
   let rows,filename;
   if(type==='donations'){
-    rows=[['Donor Name','Project','Amount (USD)','Date']];
-    donors.forEach(d=>{const p=projects.find(x=>x.id===d.project_id);rows.push([d.name,p?p.name:'',d.amount,d.date]);});
+    rows=[['Donor Name','Email','Project','Amount (USD)','Date']];
+    donors.forEach(d=>{const p=projects.find(x=>x.id===d.project_id);rows.push([d.name,d.email||'',p?p.name:'',d.amount,d.date]);});
     filename='kenya-donations.csv';
   }else{
     rows=[['Name','Email','Project','Amount (USD)','Date','Status']];
@@ -851,7 +853,10 @@ function openActionModal(pid,mode){
       <p style="font-size:12px;color:var(--text-muted);text-align:center;margin-bottom:12px">Or record a cash / bank transfer:</p>
       <div class="amount-grid">${[25,50,100,250,500,'Other'].map(a=>`<button class="amount-btn" onclick="pickAmt(this,${typeof a==='number'?a:'null'},'give')">${typeof a==='number'?'$'+a:a}</button>`).join('')}</div>
       <div id="custom-wrap-give" style="display:none" class="field"><label>Custom amount (USD)</label><input type="number" id="custom-amt-give" placeholder="Enter amount" min="1"></div>
-      <div class="field"><label>Your name</label><input type="text" id="give-name" placeholder="Full name" value="${prefillName}"></div>
+      <div class="form-row">
+        <div class="field"><label>Your name</label><input type="text" id="give-name" placeholder="Full name" value="${prefillName}"></div>
+        <div class="field"><label>Your email</label><input type="email" id="give-email" placeholder="your@email.com" value="${prefillEmail}"></div>
+      </div>
       <div class="form-actions">
         <button class="btn-cancel" onclick="closeActionModal()">Cancel</button>
         <button class="btn-submit" id="btn-confirm-give" onclick="confirmGive()">Record donation</button>
@@ -894,16 +899,18 @@ function closeActionModal(){document.getElementById('action-overlay').classList.
 
 async function confirmGive(){
   const name=document.getElementById('give-name')?.value?.trim();
+  const email=document.getElementById('give-email')?.value?.trim();
   const custom=document.getElementById('custom-amt-give')?.value;
   const amount=selAmount!==null?selAmount:parseFloat(custom);
   if(!name){alert('Please enter your name');return;}
+  if(!email||!email.includes('@')){alert('Please enter a valid email address');return;}
   if(!amount||amount<1){alert('Please select or enter an amount');return;}
   const btn=document.getElementById('btn-confirm-give');
   btn.disabled=true; btn.textContent='Saving...';
   try{
     const proj=projects.find(p=>p.id===selProjectId);
     const date=new Date().toISOString().split('T')[0];
-    await sbApi('donors','POST',{name,project_id:selProjectId,amount,date});
+    await sbApi('donors','POST',{name,email,project_id:selProjectId,amount,date});
     await sbApi('projects?id=eq.'+selProjectId,'PATCH',{raised:(proj?.raised||0)+amount});
     await loadData(); renderDonorView();
     document.getElementById('action-modal-content').innerHTML=`
