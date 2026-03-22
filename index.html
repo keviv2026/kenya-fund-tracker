@@ -32,12 +32,14 @@ h1, h2, h3 { font-family: 'DM Serif Display', serif; }
 .spinner { width: 32px; height: 32px; border: 3px solid var(--border); border-top-color: var(--green); border-radius: 50%; animation: spin 0.8s linear infinite; }
 @keyframes spin { to { transform: rotate(360deg); } }
 .loading-text { font-size: 14px; color: var(--text-muted); }
-#auth-screen { min-height: 100vh; display: none; align-items: center; justify-content: center; padding: 20px; }
-.auth-card { background: var(--white); border-radius: var(--radius); border: 1px solid var(--border); padding: 40px 36px; width: 100%; max-width: 400px; }
-.auth-logo { text-align: center; margin-bottom: 28px; }
-.auth-logo h1 { font-size: 26px; color: var(--green); }
-.auth-logo p { font-size: 13px; color: var(--text-muted); margin-top: 4px; }
-.auth-tabs { display: flex; border: 1px solid var(--border); border-radius: var(--radius-sm); overflow: hidden; margin-bottom: 24px; }
+
+/* AUTH MODAL */
+.overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.5); z-index: 200; align-items: center; justify-content: center; padding: 20px; }
+.overlay.show { display: flex; }
+.modal { background: var(--white); border-radius: var(--radius); padding: 24px; width: 100%; max-width: 420px; max-height: 90vh; overflow-y: auto; }
+.modal h3 { font-size: 18px; margin-bottom: 4px; }
+.modal-sub { font-size: 13px; color: var(--text-muted); margin-bottom: 18px; }
+.auth-tabs { display: flex; border: 1px solid var(--border); border-radius: var(--radius-sm); overflow: hidden; margin-bottom: 20px; }
 .auth-tab { flex: 1; padding: 10px; text-align: center; font-size: 13px; font-weight: 500; cursor: pointer; background: var(--white); color: var(--text-muted); border: none; font-family: 'DM Sans', sans-serif; }
 .auth-tab.active { background: var(--green); color: white; }
 .field { margin-bottom: 14px; }
@@ -52,17 +54,25 @@ h1, h2, h3 { font-family: 'DM Serif Display', serif; }
 .auth-error { font-size: 13px; color: var(--red); text-align: center; margin-top: 10px; display: none; background: var(--red-light); padding: 10px; border-radius: var(--radius-sm); }
 .auth-success { font-size: 13px; color: var(--green); text-align: center; margin-top: 10px; display: none; background: var(--green-light); padding: 10px; border-radius: var(--radius-sm); line-height: 1.6; }
 .back-link { display: block; text-align: center; font-size: 12px; color: var(--text-muted); cursor: pointer; margin-top: 14px; }
-#app { display: none; }
+.modal-close { float: right; background: none; border: none; font-size: 20px; cursor: pointer; color: var(--text-muted); line-height: 1; margin-top: -4px; }
+
+/* NAV */
 nav { background: var(--white); border-bottom: 1px solid var(--border); padding: 0 20px; display: flex; align-items: center; justify-content: space-between; height: 56px; position: sticky; top: 0; z-index: 100; }
 .nav-logo { font-family: 'DM Serif Display', serif; font-size: 18px; color: var(--green); }
-.nav-right { display: flex; align-items: center; gap: 12px; }
-.nav-user { font-size: 13px; color: var(--text-muted); max-width: 160px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.nav-right { display: flex; align-items: center; gap: 10px; }
+.nav-user { font-size: 13px; color: var(--text-muted); max-width: 140px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 .nav-badge { font-size: 11px; padding: 3px 10px; border-radius: 20px; font-weight: 500; }
 .nav-badge.admin { background: var(--green-light); color: var(--green); }
 .nav-badge.donor { background: var(--gold-light); color: var(--gold); }
-.btn-logout { font-size: 13px; padding: 6px 14px; border: 1px solid var(--border); border-radius: var(--radius-sm); background: transparent; cursor: pointer; color: var(--text-muted); font-family: 'DM Sans', sans-serif; }
+.btn-nav { font-size: 13px; padding: 6px 14px; border: 1px solid var(--border); border-radius: var(--radius-sm); background: transparent; cursor: pointer; color: var(--text-muted); font-family: 'DM Sans', sans-serif; white-space: nowrap; }
+.btn-nav.signin { color: var(--green); border-color: var(--green); }
+.btn-nav.signin:hover { background: var(--green-light); }
+
+/* PAGES */
 .page { display: none; padding: 24px 20px; max-width: 780px; margin: 0 auto; }
 .page.active { display: block; }
+
+/* ADMIN */
 .admin-tabs { display: flex; gap: 6px; margin-bottom: 24px; overflow-x: auto; padding-bottom: 2px; }
 .admin-tab { padding: 8px 16px; border-radius: 20px; border: 1px solid var(--border); background: var(--white); font-size: 13px; font-weight: 500; cursor: pointer; color: var(--text-muted); white-space: nowrap; font-family: 'DM Sans', sans-serif; transition: all 0.2s; }
 .admin-tab.active { background: var(--green); color: white; border-color: var(--green); }
@@ -76,6 +86,8 @@ nav { background: var(--white); border-bottom: 1px solid var(--border); padding:
 .section-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 14px; }
 .section-title { font-size: 18px; }
 .btn-add { padding: 8px 16px; background: var(--green); color: white; border: none; border-radius: var(--radius-sm); font-size: 13px; font-weight: 500; cursor: pointer; font-family: 'DM Sans', sans-serif; }
+
+/* PROJECT CARDS */
 .project-card { background: var(--white); border: 1px solid var(--border); border-radius: var(--radius); padding: 18px; margin-bottom: 12px; }
 .project-card-top { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 8px; }
 .project-name { font-size: 16px; font-family: 'DM Serif Display', serif; }
@@ -95,8 +107,8 @@ nav { background: var(--white); border-bottom: 1px solid var(--border); padding:
 .btn-sm:hover { background: var(--bg); }
 .btn-sm.edit { color: var(--green); border-color: #9fe1cb; }
 .btn-sm.edit:hover { background: var(--green-light); }
-.btn-sm.danger { color: var(--red); border-color: #fcc; }
-.btn-sm.danger:hover { background: var(--red-light); }
+
+/* TABLES */
 .table-wrap { background: var(--white); border: 1px solid var(--border); border-radius: var(--radius); overflow: hidden; margin-bottom: 20px; }
 .table-top { display: flex; justify-content: space-between; align-items: center; padding: 14px 16px; border-bottom: 1px solid var(--border); }
 .table-top-title { font-size: 14px; font-weight: 500; }
@@ -111,6 +123,8 @@ tr:hover td { background: var(--bg); }
 .status-pill { display: inline-block; border-radius: 20px; padding: 3px 10px; font-size: 11px; font-weight: 500; cursor: pointer; }
 .status-pending { background: var(--gold-light); color: var(--gold); }
 .status-fulfilled { background: var(--green-light); color: var(--green); }
+
+/* FORMS */
 .form-card { background: var(--white); border: 1px solid var(--border); border-radius: var(--radius); padding: 20px; margin-bottom: 20px; }
 .form-card h3 { font-size: 16px; margin-bottom: 16px; }
 .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
@@ -121,8 +135,10 @@ tr:hover td { background: var(--bg); }
 .btn-delete-project { width: 100%; margin-top: 10px; padding: 10px; border: 1px solid #fcc; border-radius: var(--radius-sm); background: transparent; color: var(--red); cursor: pointer; font-size: 13px; font-family: 'DM Sans', sans-serif; }
 .btn-delete-project:hover { background: var(--red-light); }
 .color-picker { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 6px; }
-.color-option { width: 28px; height: 28px; border-radius: 50%; cursor: pointer; border: 3px solid transparent; transition: border 0.15s; }
+.color-option { width: 28px; height: 28px; border-radius: 50%; cursor: pointer; border: 3px solid transparent; }
 .color-option.selected { border-color: var(--text); }
+
+/* DONOR PAGE */
 .donor-hero { text-align: center; padding: 36px 20px; background: var(--green); border-radius: var(--radius); margin-bottom: 24px; color: white; }
 .donor-hero-tag { display: inline-block; font-size: 11px; font-weight: 600; background: rgba(255,255,255,0.2); padding: 4px 14px; border-radius: 20px; margin-bottom: 14px; letter-spacing: 1px; text-transform: uppercase; }
 .donor-hero h1 { font-size: 28px; margin-bottom: 10px; }
@@ -141,15 +157,16 @@ tr:hover td { background: var(--bg); }
 .donor-raised { font-size: 14px; font-weight: 600; color: var(--green); }
 .donor-pledged-label { font-size: 12px; color: var(--blue); margin-bottom: 6px; }
 .donor-goal-text { font-size: 13px; color: var(--text-muted); }
-.donor-footer { display: flex; justify-content: space-between; align-items: center; margin-top: 14px; gap: 8px; }
+.donor-footer { display: flex; justify-content: space-between; align-items: center; margin-top: 14px; gap: 8px; flex-wrap: wrap; }
 .donor-meta { font-size: 12px; color: var(--text-muted); flex: 1; }
 .action-btns { display: flex; gap: 8px; }
 .btn-give { padding: 9px 18px; background: var(--green); color: white; border: none; border-radius: var(--radius-sm); font-size: 13px; font-weight: 600; cursor: pointer; font-family: 'DM Sans', sans-serif; }
 .btn-give:disabled { background: var(--border); color: var(--text-muted); cursor: default; }
 .btn-pledge { padding: 9px 18px; background: transparent; color: var(--blue); border: 1.5px solid var(--blue); border-radius: var(--radius-sm); font-size: 13px; font-weight: 600; cursor: pointer; font-family: 'DM Sans', sans-serif; }
 .btn-pledge:hover { background: var(--blue-light); }
-.btn-pay-gateway { padding: 9px 18px; background: var(--gold); color: white; border: none; border-radius: var(--radius-sm); font-size: 13px; font-weight: 600; cursor: pointer; font-family: 'DM Sans', sans-serif; }
-.btn-pay-gateway:hover { opacity: 0.9; }
+.legend { display: flex; gap: 14px; margin-bottom: 8px; }
+.legend-item { display: flex; align-items: center; gap: 5px; font-size: 12px; color: var(--text-muted); }
+.legend-dot { width: 10px; height: 10px; border-radius: 2px; }
 .my-activity { background: var(--white); border: 1px solid var(--border); border-radius: var(--radius); padding: 20px; margin-bottom: 24px; }
 .my-activity h3 { font-size: 16px; margin-bottom: 14px; }
 .activity-item { display: flex; justify-content: space-between; align-items: center; padding: 10px 0; border-bottom: 1px solid var(--border); font-size: 13px; }
@@ -162,21 +179,20 @@ tr:hover td { background: var(--bg); }
 .how-label { font-size: 12px; color: var(--text-muted); line-height: 1.5; }
 .trust-row { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 24px; }
 .trust-badge { font-size: 12px; background: var(--white); border: 1px solid var(--border); color: var(--text-muted); padding: 6px 14px; border-radius: 20px; }
-.overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.5); z-index: 200; align-items: center; justify-content: center; padding: 20px; }
-.overlay.show { display: flex; }
-.modal { background: var(--white); border-radius: var(--radius); padding: 24px; width: 100%; max-width: 420px; max-height: 90vh; overflow-y: auto; }
-.modal h3 { font-size: 18px; margin-bottom: 4px; }
-.modal-sub { font-size: 13px; color: var(--text-muted); margin-bottom: 18px; }
-.modal-tabs { display: flex; border: 1px solid var(--border); border-radius: var(--radius-sm); overflow: hidden; margin-bottom: 18px; }
-.modal-tab { flex: 1; padding: 9px; text-align: center; font-size: 13px; font-weight: 500; cursor: pointer; background: var(--white); color: var(--text-muted); border: none; font-family: 'DM Sans', sans-serif; transition: all 0.2s; }
-.modal-tab.active.give { background: var(--green); color: white; }
-.modal-tab.active.pledge { background: var(--blue); color: white; }
+
+/* ACTION MODAL */
 .amount-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin-bottom: 14px; }
 .amount-btn { padding: 10px; border: 1px solid var(--border); border-radius: var(--radius-sm); background: var(--white); font-size: 14px; font-weight: 500; cursor: pointer; font-family: 'DM Sans', sans-serif; }
 .amount-btn.selected.give { background: var(--green-light); border-color: var(--green); color: var(--green); }
 .amount-btn.selected.pledge { background: var(--blue-light); border-color: var(--blue); color: var(--blue); }
+.modal-tabs { display: flex; border: 1px solid var(--border); border-radius: var(--radius-sm); overflow: hidden; margin-bottom: 18px; }
+.modal-tab { flex: 1; padding: 9px; text-align: center; font-size: 13px; font-weight: 500; cursor: pointer; background: var(--white); color: var(--text-muted); border: none; font-family: 'DM Sans', sans-serif; }
+.modal-tab.active.give { background: var(--green); color: white; }
+.modal-tab.active.pledge { background: var(--blue); color: white; }
 .gateway-box { background: var(--gold-light); border: 1px solid #e8c87a; border-radius: var(--radius-sm); padding: 14px; margin-bottom: 14px; text-align: center; }
 .gateway-box p { font-size: 13px; color: var(--gold); margin-bottom: 10px; }
+.btn-pay-gateway { padding: 10px 20px; background: var(--gold); color: white; border: none; border-radius: var(--radius-sm); font-size: 13px; font-weight: 600; cursor: pointer; font-family: 'DM Sans', sans-serif; }
+.btn-pay-gateway:hover { opacity: 0.9; }
 .success-content { text-align: center; padding: 10px 0; }
 .success-icon { width: 52px; height: 52px; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 14px; font-size: 22px; font-weight: bold; }
 .success-icon.give { background: var(--green-light); color: var(--green); }
@@ -190,39 +206,35 @@ tr:hover td { background: var(--bg); }
 .empty-state { text-align: center; padding: 32px; color: var(--text-muted); font-size: 13px; }
 .toast { position: fixed; bottom: 24px; right: 24px; background: var(--text); color: white; padding: 12px 20px; border-radius: var(--radius-sm); font-size: 13px; z-index: 999; opacity: 0; transition: opacity 0.3s; pointer-events: none; }
 .toast.show { opacity: 1; }
-.legend { display: flex; gap: 14px; margin-bottom: 8px; }
-.legend-item { display: flex; align-items: center; gap: 5px; font-size: 12px; color: var(--text-muted); }
-.legend-dot { width: 10px; height: 10px; border-radius: 2px; }
-@media(max-width:520px) { .stats-grid { grid-template-columns:1fr 1fr; } .form-row { grid-template-columns:1fr; } .donor-hero-stats { gap:16px; } .how-grid { grid-template-columns:1fr; } .action-btns { flex-direction: column; } .donor-footer { flex-direction: column; align-items: flex-start; } }
+@media(max-width:520px) { .stats-grid{grid-template-columns:1fr 1fr} .form-row{grid-template-columns:1fr} .donor-hero-stats{gap:16px} .how-grid{grid-template-columns:1fr} .action-btns{flex-direction:column} }
 </style>
 </head>
 <body>
 
 <div id="loading-screen">
   <div class="spinner"></div>
-  <div class="loading-text">Loading Kenya Projects...</div>
+  <div class="loading-text">Loading Kenya Mission Fund...</div>
 </div>
 
-<div id="auth-screen">
-  <div class="auth-card">
-    <div class="auth-logo">
-      <h1>Kenya Mission Fund</h1>
-      <p>Donor Portal & Project Tracker</p>
-    </div>
-    <div id="panel-login">
+<!-- AUTH MODAL -->
+<div class="overlay" id="auth-overlay">
+  <div class="modal">
+    <div id="auth-panel-login">
+      <button class="modal-close" onclick="closeAuthModal()">×</button>
       <div class="auth-tabs">
-        <button class="auth-tab active" onclick="showPanel('login')">Sign in</button>
-        <button class="auth-tab" onclick="showPanel('register')">Register</button>
+        <button class="auth-tab active" onclick="showAuthPanel('login')">Sign in</button>
+        <button class="auth-tab" onclick="showAuthPanel('register')">Register</button>
       </div>
       <div class="field"><label>Email</label><input type="email" id="login-email" placeholder="your@email.com"></div>
       <div class="field"><label>Password</label><input type="password" id="login-pass" placeholder="••••••••"></div>
       <button class="btn-auth" id="btn-login" onclick="login()">Sign in</button>
-      <span class="forgot-link" onclick="showPanel('forgot')">Forgot your password?</span>
+      <span class="forgot-link" onclick="showAuthPanel('forgot')">Forgot your password?</span>
       <div class="auth-error" id="login-error"></div>
     </div>
-    <div id="panel-register" style="display:none">
+    <div id="auth-panel-register" style="display:none">
+      <button class="modal-close" onclick="closeAuthModal()">×</button>
       <div class="auth-tabs">
-        <button class="auth-tab" onclick="showPanel('login')">Sign in</button>
+        <button class="auth-tab" onclick="showAuthPanel('login')">Sign in</button>
         <button class="auth-tab active">Register</button>
       </div>
       <div class="field"><label>Full name</label><input type="text" id="reg-name" placeholder="Your name"></div>
@@ -232,22 +244,19 @@ tr:hover td { background: var(--bg); }
       <div class="auth-error" id="register-error"></div>
       <div class="auth-success" id="register-success"></div>
     </div>
-    <div id="panel-forgot" style="display:none">
-      <div style="text-align:center;margin-bottom:20px">
-        <h3 style="font-size:20px;margin-bottom:6px">Reset your password</h3>
-        <p style="font-size:13px;color:var(--text-muted)">Enter your email and we'll send you a reset link</p>
-      </div>
+    <div id="auth-panel-forgot" style="display:none">
+      <button class="modal-close" onclick="closeAuthModal()">×</button>
+      <h3>Reset password</h3>
+      <p class="modal-sub">Enter your email and we'll send you a reset link</p>
       <div class="field"><label>Email</label><input type="email" id="forgot-email" placeholder="your@email.com"></div>
       <button class="btn-auth" id="btn-forgot" onclick="sendReset()">Send reset link</button>
       <div class="auth-error" id="forgot-error"></div>
       <div class="auth-success" id="forgot-success"></div>
-      <span class="back-link" onclick="showPanel('login')">← Back to sign in</span>
+      <span class="back-link" onclick="showAuthPanel('login')">← Back to sign in</span>
     </div>
-    <div id="panel-reset" style="display:none">
-      <div style="text-align:center;margin-bottom:20px">
-        <h3 style="font-size:20px;margin-bottom:6px">Set new password</h3>
-        <p style="font-size:13px;color:var(--text-muted)">Choose a new password for your account</p>
-      </div>
+    <div id="auth-panel-reset" style="display:none">
+      <h3>Set new password</h3>
+      <p class="modal-sub">Choose a new password for your account</p>
       <div class="field"><label>New password</label><input type="password" id="reset-pass" placeholder="Min 6 characters"></div>
       <div class="field"><label>Confirm password</label><input type="password" id="reset-confirm" placeholder="Re-enter password"></div>
       <button class="btn-auth" id="btn-reset" onclick="resetPassword()">Update password</button>
@@ -257,145 +266,12 @@ tr:hover td { background: var(--bg); }
   </div>
 </div>
 
-<div id="app">
-  <nav>
-    <div class="nav-logo">Kenya Mission Fund</div>
-    <div class="nav-right">
-      <span class="nav-user" id="nav-user"></span>
-      <span class="nav-badge" id="nav-badge"></span>
-      <button class="btn-logout" onclick="logout()">Sign out</button>
-    </div>
-  </nav>
-
-  <!-- ADMIN PAGE -->
-  <div class="page active" id="admin-page">
-    <div class="admin-tabs">
-      <button class="admin-tab active" onclick="showAdminTab('dashboard')">Dashboard</button>
-      <button class="admin-tab" onclick="showAdminTab('projects')">Projects</button>
-      <button class="admin-tab" onclick="showAdminTab('donors')">Donations</button>
-      <button class="admin-tab" onclick="showAdminTab('pledges')">Pledges</button>
-      <button class="admin-tab" onclick="showAdminTab('add-donation')">+ Add Donation</button>
-      <button class="admin-tab" onclick="showAdminTab('add-project')">+ New Project</button>
-    </div>
-
-    <div id="tab-dashboard">
-      <div class="stats-grid" id="admin-stats"></div>
-      <div class="section-header"><h2 class="section-title">All projects</h2></div>
-      <div id="admin-projects-dash"></div>
-    </div>
-
-    <div id="tab-projects" style="display:none">
-      <div class="section-header"><h2 class="section-title">Manage projects</h2><button class="btn-add" onclick="showAdminTab('add-project')">+ New project</button></div>
-      <div id="admin-projects-list"></div>
-    </div>
-
-    <div id="tab-donors" style="display:none">
-      <div class="table-wrap">
-        <div class="table-top"><span class="table-top-title">All donations</span><button class="btn-export" onclick="exportCSV('donations')">Export CSV</button></div>
-        <table><thead><tr><th>Name</th><th>Project</th><th>Amount</th><th>Date</th></tr></thead><tbody id="donor-tbody"></tbody></table>
-      </div>
-    </div>
-
-    <div id="tab-pledges" style="display:none">
-      <div class="table-wrap">
-        <div class="table-top"><span class="table-top-title">All pledges</span><button class="btn-export" onclick="exportCSV('pledges')">Export CSV</button></div>
-        <table><thead><tr><th>Name</th><th>Email</th><th>Project</th><th>Amount</th><th>Date</th><th>Status</th></tr></thead><tbody id="pledges-tbody"></tbody></table>
-      </div>
-    </div>
-
-    <div id="tab-add-donation" style="display:none">
-      <div class="form-card">
-        <h3>Record a donation</h3>
-        <div class="form-row">
-          <div class="field"><label>Donor name</label><input type="text" id="d-name" placeholder="Full name"></div>
-          <div class="field"><label>Amount (USD)</label><input type="number" id="d-amount" placeholder="0" min="1"></div>
-        </div>
-        <div class="field"><label>Project</label><select id="d-project"></select></div>
-        <div class="field"><label>Date</label><input type="date" id="d-date"></div>
-        <div class="form-actions">
-          <button class="btn-cancel" onclick="showAdminTab('dashboard')">Cancel</button>
-          <button class="btn-submit" id="btn-save-donation" onclick="addDonation()">Save donation</button>
-        </div>
-      </div>
-    </div>
-
-    <div id="tab-add-project" style="display:none">
-      <div class="form-card">
-        <h3 id="project-form-title">Add a new project</h3>
-        <input type="hidden" id="edit-project-id">
-        <div class="field"><label>Project name</label><input type="text" id="p-name" placeholder="e.g. School building — Nairobi"></div>
-        <div class="form-row">
-          <div class="field"><label>Location in Kenya</label><input type="text" id="p-location" placeholder="e.g. Nairobi"></div>
-          <div class="field"><label>Funding goal (USD)</label><input type="number" id="p-goal" placeholder="0" min="1"></div>
-        </div>
-        <div class="field"><label>Description</label><textarea id="p-desc" placeholder="Describe what this project will accomplish..."></textarea></div>
-        <div class="field">
-          <label>Project color</label>
-          <div class="color-picker" id="color-picker">
-            <div class="color-option selected" data-color="default" style="background:#8b5cf6" onclick="selectColor(this,'default')"></div>
-            <div class="color-option" data-color="water" style="background:#3b82f6" onclick="selectColor(this,'water')"></div>
-            <div class="color-option" data-color="school" style="background:#2d9b5a" onclick="selectColor(this,'school')"></div>
-            <div class="color-option" data-color="medical" style="background:#c8922a" onclick="selectColor(this,'medical')"></div>
-            <div class="color-option" data-color="red" style="background:#e03c3c" onclick="selectColor(this,'red')"></div>
-            <div class="color-option" data-color="teal" style="background:#0d9488" onclick="selectColor(this,'teal')"></div>
-          </div>
-        </div>
-        <div class="form-actions">
-          <button class="btn-cancel" onclick="cancelProjectForm()">Cancel</button>
-          <button class="btn-submit" id="btn-save-project" onclick="saveProject()">Add project</button>
-        </div>
-        <button class="btn-delete-project" id="btn-delete-project" style="display:none" onclick="confirmDeleteProject()">Delete this project</button>
-      </div>
-    </div>
-  </div>
-
-  <!-- DONOR PAGE -->
-  <div class="page" id="donor-page">
-    <div class="donor-hero">
-      <div class="donor-hero-tag">Kenya Mission Fund</div>
-      <h1>Help transform lives in Kenya</h1>
-      <p>Every dollar goes directly to projects bringing clean water, education, and healthcare to communities in need.</p>
-      <div class="donor-hero-stats">
-        <div><div class="donor-stat-num" id="hero-raised">$0</div><div class="donor-stat-label">Given</div></div>
-        <div><div class="donor-stat-num" id="hero-pledged">$0</div><div class="donor-stat-label">Pledged</div></div>
-        <div><div class="donor-stat-num" id="hero-donors">0</div><div class="donor-stat-label">Donors</div></div>
-        <div><div class="donor-stat-num" id="hero-projects">0</div><div class="donor-stat-label">Projects</div></div>
-      </div>
-    </div>
-    <div id="my-activity-section"></div>
-
-    <div style="margin-bottom:24px">
-      <h2 class="section-title" style="margin-bottom:6px">See the impact firsthand</h2>
-      <p style="font-size:13px;color:var(--text-muted);margin-bottom:14px;line-height:1.6">Watch our team's recent trip to Kenya — the communities, the projects, and the people your gift will help.</p>
-      <div style="position:relative;padding-bottom:56.25%;height:0;overflow:hidden;border-radius:var(--radius);border:1px solid var(--border)">
-        <iframe src="https://www.youtube.com/embed/8H9GxrHtv0Q?start=310" title="Kenya Mission Trip" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen style="position:absolute;top:0;left:0;width:100%;height:100%;border-radius:var(--radius)"></iframe>
-      </div>
-    </div>
-
-    <h2 class="section-title" style="margin-bottom:14px">Choose a project to support</h2>
-    <div id="donor-projects"></div>
-    <div style="margin:24px 0 14px"><h2 class="section-title">How it works</h2></div>
-    <div class="how-grid">
-      <div class="how-card"><div class="how-num">1</div><div class="how-label">Pick a project you care about</div></div>
-      <div class="how-card"><div class="how-num">2</div><div class="how-label">Give now or pledge for later</div></div>
-      <div class="how-card"><div class="how-num">3</div><div class="how-label">100% goes to the project</div></div>
-    </div>
-    <h2 class="section-title" style="margin-bottom:10px">Why trust us</h2>
-    <div class="trust-row">
-      <span class="trust-badge">100% to projects</span>
-      <span class="trust-badge">Regular updates</span>
-      <span class="trust-badge">Photos & reports</span>
-      <span class="trust-badge">Community verified</span>
-    </div>
-  </div>
-</div>
-
-<!-- GIVE/PLEDGE MODAL -->
+<!-- ACTION MODAL -->
 <div class="overlay" id="action-overlay">
   <div class="modal" id="action-modal-content"></div>
 </div>
 
-<!-- DELETE CONFIRM MODAL -->
+<!-- DELETE MODAL -->
 <div class="overlay" id="delete-overlay">
   <div class="modal">
     <div class="confirm-delete">
@@ -406,6 +282,137 @@ tr:hover td { background: var(--bg); }
         <button class="btn-cancel" onclick="closeDeleteModal()">Cancel</button>
         <button class="btn-confirm-delete" id="btn-confirm-delete" onclick="deleteProject()">Yes, delete</button>
       </div>
+    </div>
+  </div>
+</div>
+
+<!-- NAV -->
+<nav>
+  <div class="nav-logo">Kenya Mission Fund</div>
+  <div class="nav-right" id="nav-right">
+    <button class="btn-nav signin" onclick="openAuthModal()">Sign in</button>
+  </div>
+</nav>
+
+<!-- PUBLIC DONOR PAGE -->
+<div class="page active" id="public-page">
+  <div class="donor-hero">
+    <div class="donor-hero-tag">Kenya Mission Fund</div>
+    <h1>Help transform lives in Kenya</h1>
+    <p>Every dollar goes directly to projects bringing clean water, education, and healthcare to communities in need.</p>
+    <div class="donor-hero-stats">
+      <div><div class="donor-stat-num" id="hero-raised">$0</div><div class="donor-stat-label">Given</div></div>
+      <div><div class="donor-stat-num" id="hero-pledged">$0</div><div class="donor-stat-label">Pledged</div></div>
+      <div><div class="donor-stat-num" id="hero-donors">0</div><div class="donor-stat-label">Donors</div></div>
+      <div><div class="donor-stat-num" id="hero-projects">0</div><div class="donor-stat-label">Projects</div></div>
+    </div>
+  </div>
+
+  <div id="my-activity-section"></div>
+
+  <div style="text-align:center;padding:20px 24px;margin-bottom:24px;background:var(--white);border-radius:var(--radius);border:1px solid var(--border);border-left:4px solid var(--green)">
+    <p style="font-size:17px;font-family:'DM Serif Display',serif;color:var(--text);line-height:1.7;margin-bottom:8px">"Arise, shine, for your light has come, and the glory of the Lord rises upon you."</p>
+    <p style="font-size:13px;color:var(--text-muted);font-weight:500">Isaiah 60:1 (NIV)</p>
+  </div>
+
+  <div style="margin-bottom:24px">
+    <h2 class="section-title" style="margin-bottom:6px">See the impact firsthand</h2>
+    <p style="font-size:13px;color:var(--text-muted);margin-bottom:14px;line-height:1.6">Watch our team's recent trip to Kenya — the communities, the projects, and the people your gift will help.</p>
+    <div style="position:relative;padding-bottom:56.25%;height:0;overflow:hidden;border-radius:var(--radius);border:1px solid var(--border)">
+      <iframe src="https://www.youtube-nocookie.com/embed/8H9GxrHtv0Q?start=310" title="Kenya Mission Trip" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen referrerpolicy="strict-origin-when-cross-origin" style="position:absolute;top:0;left:0;width:100%;height:100%;border-radius:var(--radius)"></iframe>
+    </div>
+  </div>
+
+  <h2 class="section-title" style="margin-bottom:14px">Choose a project to support</h2>
+  <div id="donor-projects"></div>
+
+  <div style="margin:24px 0 14px"><h2 class="section-title">How it works</h2></div>
+  <div class="how-grid">
+    <div class="how-card"><div class="how-num">1</div><div class="how-label">Pick a project you care about</div></div>
+    <div class="how-card"><div class="how-num">2</div><div class="how-label">Give now or pledge for later</div></div>
+    <div class="how-card"><div class="how-num">3</div><div class="how-label">100% goes to the project</div></div>
+  </div>
+  <h2 class="section-title" style="margin-bottom:10px">Why trust us</h2>
+  <div class="trust-row">
+    <span class="trust-badge">100% to projects</span>
+    <span class="trust-badge">Regular updates</span>
+    <span class="trust-badge">Photos & reports</span>
+    <span class="trust-badge">Community verified</span>
+  </div>
+</div>
+
+<!-- ADMIN PAGE -->
+<div class="page" id="admin-page">
+  <div class="admin-tabs">
+    <button class="admin-tab active" onclick="showAdminTab('dashboard')">Dashboard</button>
+    <button class="admin-tab" onclick="showAdminTab('projects')">Projects</button>
+    <button class="admin-tab" onclick="showAdminTab('donors')">Donations</button>
+    <button class="admin-tab" onclick="showAdminTab('pledges')">Pledges</button>
+    <button class="admin-tab" onclick="showAdminTab('add-donation')">+ Add Donation</button>
+    <button class="admin-tab" onclick="showAdminTab('add-project')">+ New Project</button>
+  </div>
+  <div id="tab-dashboard">
+    <div class="stats-grid" id="admin-stats"></div>
+    <div class="section-header"><h2 class="section-title">All projects</h2></div>
+    <div id="admin-projects-dash"></div>
+  </div>
+  <div id="tab-projects" style="display:none">
+    <div class="section-header"><h2 class="section-title">Manage projects</h2><button class="btn-add" onclick="showAdminTab('add-project')">+ New project</button></div>
+    <div id="admin-projects-list"></div>
+  </div>
+  <div id="tab-donors" style="display:none">
+    <div class="table-wrap">
+      <div class="table-top"><span class="table-top-title">All donations</span><button class="btn-export" onclick="exportCSV('donations')">Export CSV</button></div>
+      <table><thead><tr><th>Name</th><th>Project</th><th>Amount</th><th>Date</th></tr></thead><tbody id="donor-tbody"></tbody></table>
+    </div>
+  </div>
+  <div id="tab-pledges" style="display:none">
+    <div class="table-wrap">
+      <div class="table-top"><span class="table-top-title">All pledges</span><button class="btn-export" onclick="exportCSV('pledges')">Export CSV</button></div>
+      <table><thead><tr><th>Name</th><th>Email</th><th>Project</th><th>Amount</th><th>Date</th><th>Status</th></tr></thead><tbody id="pledges-tbody"></tbody></table>
+    </div>
+  </div>
+  <div id="tab-add-donation" style="display:none">
+    <div class="form-card">
+      <h3>Record a donation</h3>
+      <div class="form-row">
+        <div class="field"><label>Donor name</label><input type="text" id="d-name" placeholder="Full name"></div>
+        <div class="field"><label>Amount (USD)</label><input type="number" id="d-amount" placeholder="0" min="1"></div>
+      </div>
+      <div class="field"><label>Project</label><select id="d-project"></select></div>
+      <div class="field"><label>Date</label><input type="date" id="d-date"></div>
+      <div class="form-actions">
+        <button class="btn-cancel" onclick="showAdminTab('dashboard')">Cancel</button>
+        <button class="btn-submit" id="btn-save-donation" onclick="addDonation()">Save donation</button>
+      </div>
+    </div>
+  </div>
+  <div id="tab-add-project" style="display:none">
+    <div class="form-card">
+      <h3 id="project-form-title">Add a new project</h3>
+      <input type="hidden" id="edit-project-id">
+      <div class="field"><label>Project name</label><input type="text" id="p-name" placeholder="e.g. School building — Nairobi"></div>
+      <div class="form-row">
+        <div class="field"><label>Location in Kenya</label><input type="text" id="p-location" placeholder="e.g. Nairobi"></div>
+        <div class="field"><label>Funding goal (USD)</label><input type="number" id="p-goal" placeholder="0" min="1"></div>
+      </div>
+      <div class="field"><label>Description</label><textarea id="p-desc" placeholder="Describe what this project will accomplish..."></textarea></div>
+      <div class="field">
+        <label>Project color</label>
+        <div class="color-picker">
+          <div class="color-option selected" data-color="default" style="background:#8b5cf6" onclick="selectColor(this,'default')"></div>
+          <div class="color-option" data-color="water" style="background:#3b82f6" onclick="selectColor(this,'water')"></div>
+          <div class="color-option" data-color="school" style="background:#2d9b5a" onclick="selectColor(this,'school')"></div>
+          <div class="color-option" data-color="medical" style="background:#c8922a" onclick="selectColor(this,'medical')"></div>
+          <div class="color-option" data-color="red" style="background:#e03c3c" onclick="selectColor(this,'red')"></div>
+          <div class="color-option" data-color="teal" style="background:#0d9488" onclick="selectColor(this,'teal')"></div>
+        </div>
+      </div>
+      <div class="form-actions">
+        <button class="btn-cancel" onclick="cancelProjectForm()">Cancel</button>
+        <button class="btn-submit" id="btn-save-project" onclick="saveProject()">Add project</button>
+      </div>
+      <button class="btn-delete-project" id="btn-delete-project" style="display:none" onclick="confirmDeleteProject()">Delete this project</button>
     </div>
   </div>
 </div>
@@ -453,33 +460,63 @@ async function loadData() {
 }
 
 function toast(msg, isError=false) {
-  const t = document.getElementById('toast');
-  t.textContent = msg; t.style.background = isError ? 'var(--red)' : 'var(--text)';
-  t.classList.add('show'); setTimeout(()=>t.classList.remove('show'), 3000);
+  const t=document.getElementById('toast');
+  t.textContent=msg; t.style.background=isError?'var(--red)':'var(--text)';
+  t.classList.add('show'); setTimeout(()=>t.classList.remove('show'),3000);
 }
 
-function showPanel(panel) {
-  ['login','register','forgot','reset'].forEach(p=>document.getElementById('panel-'+p).style.display=p===panel?'block':'none');
-  ['login-error','register-error','forgot-error','reset-error','register-success','forgot-success','reset-success'].forEach(id=>{ const el=document.getElementById(id); if(el) el.style.display='none'; });
+function updateNav() {
+  const nr = document.getElementById('nav-right');
+  if(currentUser) {
+    nr.innerHTML = `
+      <span class="nav-user">${currentUser.name}</span>
+      <span class="nav-badge ${currentUser.role}">${currentUser.role==='admin'?'Admin':'Donor'}</span>
+      <button class="btn-nav" onclick="logout()">Sign out</button>`;
+  } else {
+    nr.innerHTML = `<button class="btn-nav signin" onclick="openAuthModal()">Sign in</button>`;
+  }
 }
 
-function showErr(id, msg) { const el=document.getElementById(id); el.textContent=msg; el.style.display='block'; }
-function showSuccessMsg(id, msg) { const el=document.getElementById(id); el.textContent=msg; el.style.display='block'; }
+function openAuthModal() {
+  showAuthPanel('login');
+  document.getElementById('auth-overlay').classList.add('show');
+}
+
+function closeAuthModal() {
+  document.getElementById('auth-overlay').classList.remove('show');
+}
+
+function showAuthPanel(panel) {
+  ['login','register','forgot','reset'].forEach(p=>document.getElementById('auth-panel-'+p).style.display=p===panel?'block':'none');
+  ['login-error','register-error','forgot-error','reset-error','register-success','forgot-success','reset-success'].forEach(id=>{const el=document.getElementById(id);if(el)el.style.display='none';});
+}
+
+function showErr(id,msg){const el=document.getElementById(id);el.textContent=msg;el.style.display='block';}
+function showSuccessMsg(id,msg){const el=document.getElementById(id);el.textContent=msg;el.style.display='block';}
 
 async function login() {
   const email=document.getElementById('login-email').value.trim().toLowerCase();
   const pass=document.getElementById('login-pass').value;
-  if(!email||!pass) { showErr('login-error','Please fill in all fields'); return; }
+  if(!email||!pass){showErr('login-error','Please fill in all fields');return;}
   const btn=document.getElementById('btn-login');
   btn.disabled=true; btn.textContent='Signing in...';
   try {
-    const data = await sbAuth('token?grant_type=password',{email,password:pass});
+    const data=await sbAuth('token?grant_type=password',{email,password:pass});
     sbSession=data;
     const name=data.user?.user_metadata?.full_name||email.split('@')[0];
-    const role = ADMIN_EMAILS.includes(email) ? 'admin' : 'donor';
+    const role=ADMIN_EMAILS.includes(email)?'admin':'donor';
     currentUser={email,name,role,id:data.user.id};
-    await launchApp();
-  } catch(e) { showErr('login-error','Invalid email or password. New here? Click Register.'); }
+    closeAuthModal();
+    updateNav();
+    if(role==='admin') {
+      document.getElementById('public-page').classList.remove('active');
+      document.getElementById('admin-page').classList.add('active');
+      renderAdminStats(); renderDashProjects(); populateSel();
+    } else {
+      renderMyActivity();
+    }
+    toast('Welcome back, '+name+'!');
+  } catch(e){showErr('login-error','Invalid email or password.');}
   btn.disabled=false; btn.textContent='Sign in';
 }
 
@@ -487,78 +524,57 @@ async function register() {
   const name=document.getElementById('reg-name').value.trim();
   const email=document.getElementById('reg-email').value.trim().toLowerCase();
   const pass=document.getElementById('reg-pass').value;
-  if(!name||!email||!pass) { showErr('register-error','Please fill in all fields'); return; }
-  if(pass.length<6) { showErr('register-error','Password must be at least 6 characters'); return; }
+  if(!name||!email||!pass){showErr('register-error','Please fill in all fields');return;}
+  if(pass.length<6){showErr('register-error','Password must be at least 6 characters');return;}
   const btn=document.getElementById('btn-register');
   btn.disabled=true; btn.textContent='Creating account...';
   try {
     await sbAuth('signup',{email,password:pass,data:{full_name:name}});
-    showSuccessMsg('register-success','Account created! Check your email to confirm, then sign in.');
+    showSuccessMsg('register-success','Account created! You can now sign in.');
     document.getElementById('register-error').style.display='none';
-  } catch(e) { showErr('register-error',e.message||'Could not create account.'); }
+  } catch(e){showErr('register-error',e.message||'Could not create account.');}
   btn.disabled=false; btn.textContent='Create account';
 }
 
 async function sendReset() {
   const email=document.getElementById('forgot-email').value.trim().toLowerCase();
-  if(!email) { showErr('forgot-error','Please enter your email'); return; }
+  if(!email){showErr('forgot-error','Please enter your email');return;}
   const btn=document.getElementById('btn-forgot');
   btn.disabled=true; btn.textContent='Sending...';
   try {
-    await sbAuth('recover',{email,options:{redirectTo:SITE_URL+'/kenya-fund-tracker'}});
+    await sbAuth('recover',{email,options:{redirectTo:SITE_URL}});
     showSuccessMsg('forgot-success','Reset link sent! Check your email inbox.');
     document.getElementById('forgot-error').style.display='none';
     document.getElementById('forgot-email').value='';
-  } catch(e) { showErr('forgot-error',e.message||'Could not send reset email.'); }
+  } catch(e){showErr('forgot-error',e.message||'Could not send reset email.');}
   btn.disabled=false; btn.textContent='Send reset link';
 }
 
 async function resetPassword() {
   const pass=document.getElementById('reset-pass').value;
   const confirm=document.getElementById('reset-confirm').value;
-  if(!pass||!confirm) { showErr('reset-error','Please fill in both fields'); return; }
-  if(pass.length<6) { showErr('reset-error','Password must be at least 6 characters'); return; }
-  if(pass!==confirm) { showErr('reset-error','Passwords do not match'); return; }
+  if(!pass||!confirm){showErr('reset-error','Please fill in both fields');return;}
+  if(pass.length<6){showErr('reset-error','Password must be at least 6 characters');return;}
+  if(pass!==confirm){showErr('reset-error','Passwords do not match');return;}
   const btn=document.getElementById('btn-reset');
   btn.disabled=true; btn.textContent='Updating...';
   try {
     const res=await fetch(SB_URL+'/auth/v1/user',{method:'PUT',headers:{'apikey':SB_KEY,'Authorization':'Bearer '+(sbSession?.access_token||SB_KEY),'Content-Type':'application/json'},body:JSON.stringify({password:pass})});
     const data=await res.json();
-    if(!res.ok) throw new Error(data.msg||'Could not update password');
-    showSuccessMsg('reset-success','Password updated! Signing you in...');
-    setTimeout(()=>showPanel('login'),2000);
-  } catch(e) { showErr('reset-error',e.message); }
+    if(!res.ok) throw new Error(data.msg||'Error');
+    showSuccessMsg('reset-success','Password updated! You can now sign in.');
+    setTimeout(()=>{showAuthPanel('login');},2000);
+  } catch(e){showErr('reset-error',e.message);}
   btn.disabled=false; btn.textContent='Update password';
 }
 
-async function launchApp() {
-  document.getElementById('auth-screen').style.display='none';
-  document.getElementById('loading-screen').style.display='flex';
-  try { await loadData(); } catch(e) { alert('Could not connect to database: '+e.message); return; }
-  document.getElementById('loading-screen').style.display='none';
-  document.getElementById('app').style.display='block';
-  document.getElementById('nav-user').textContent=currentUser.name;
-  const badge=document.getElementById('nav-badge');
-  badge.textContent=currentUser.role==='admin'?'Admin':'Donor';
-  badge.className='nav-badge '+currentUser.role;
-  if(currentUser.role==='admin') {
-    document.getElementById('admin-page').classList.add('active');
-    document.getElementById('donor-page').classList.remove('active');
-    renderStats(); renderDashProjects(); populateSel();
-  } else {
-    document.getElementById('donor-page').classList.add('active');
-    document.getElementById('admin-page').classList.remove('active');
-    renderDonorView();
-  }
-}
-
 async function logout() {
-  if(sbSession) { try { await fetch(SB_URL+'/auth/v1/logout',{method:'POST',headers:{'apikey':SB_KEY,'Authorization':'Bearer '+sbSession.access_token}}); } catch(e){} }
+  if(sbSession){try{await fetch(SB_URL+'/auth/v1/logout',{method:'POST',headers:{'apikey':SB_KEY,'Authorization':'Bearer '+sbSession.access_token}});}catch(e){}}
   currentUser=null; sbSession=null;
-  document.getElementById('app').style.display='none';
-  document.getElementById('auth-screen').style.display='flex';
-  document.getElementById('login-email').value=''; document.getElementById('login-pass').value='';
-  showPanel('login');
+  document.getElementById('admin-page').classList.remove('active');
+  document.getElementById('public-page').classList.add('active');
+  updateNav();
+  renderDonorView();
 }
 
 function showAdminTab(tab) {
@@ -566,17 +582,14 @@ function showAdminTab(tab) {
   document.querySelectorAll('.admin-tab').forEach((el,i)=>el.classList.toggle('active',['dashboard','projects','donors','pledges','add-donation','add-project'][i]===tab));
   if(tab==='donors') renderDonorTable();
   if(tab==='pledges') renderPledgesTable();
-  if(tab==='add-donation') { populateSel(); document.getElementById('d-date').value=new Date().toISOString().split('T')[0]; }
+  if(tab==='add-donation'){populateSel();document.getElementById('d-date').value=new Date().toISOString().split('T')[0];}
   if(tab==='projects') renderProjectsList();
-  if(tab==='add-project' && !editingProjectId) resetProjectForm();
+  if(tab==='add-project'&&!editingProjectId) resetProjectForm();
 }
 
-function selectColor(el,color) {
-  document.querySelectorAll('.color-option').forEach(o=>o.classList.remove('selected'));
-  el.classList.add('selected'); selectedColor=color;
-}
+function selectColor(el,color){document.querySelectorAll('.color-option').forEach(o=>o.classList.remove('selected'));el.classList.add('selected');selectedColor=color;}
 
-function resetProjectForm() {
+function resetProjectForm(){
   editingProjectId=null;
   document.getElementById('project-form-title').textContent='Add a new project';
   document.getElementById('edit-project-id').value='';
@@ -590,12 +603,10 @@ function resetProjectForm() {
   document.querySelectorAll('.color-option').forEach(o=>o.classList.toggle('selected',o.dataset.color==='default'));
 }
 
-function openEditProject(id) {
-  const p=projects.find(x=>x.id===id);
-  if(!p) return;
+function openEditProject(id){
+  const p=projects.find(x=>x.id===id); if(!p) return;
   editingProjectId=id;
   document.getElementById('project-form-title').textContent='Edit project';
-  document.getElementById('edit-project-id').value=id;
   document.getElementById('p-name').value=p.name;
   document.getElementById('p-location').value=p.location;
   document.getElementById('p-goal').value=p.goal;
@@ -607,31 +618,31 @@ function openEditProject(id) {
   showAdminTab('add-project');
 }
 
-function cancelProjectForm() { resetProjectForm(); showAdminTab('projects'); }
+function cancelProjectForm(){resetProjectForm();showAdminTab('projects');}
 
-async function saveProject() {
+async function saveProject(){
   const name=document.getElementById('p-name').value.trim();
   const location=document.getElementById('p-location').value.trim();
   const goal=parseFloat(document.getElementById('p-goal').value);
   const desc=document.getElementById('p-desc').value.trim();
-  if(!name||!location||!goal) { alert('Please fill in name, location and goal'); return; }
+  if(!name||!location||!goal){alert('Please fill in name, location and goal');return;}
   const btn=document.getElementById('btn-save-project');
   btn.disabled=true; btn.textContent='Saving...';
   try {
-    if(editingProjectId) {
+    if(editingProjectId){
       await sbApi('projects?id=eq.'+editingProjectId,'PATCH',{name,location,goal,description:desc||'No description.',color:selectedColor});
       toast('Project updated!');
     } else {
       await sbApi('projects','POST',{name,location,goal,raised:0,description:desc||'No description.',color:selectedColor});
       toast('Project added!');
     }
-    await loadData(); renderStats(); renderDashProjects(); populateSel();
+    await loadData(); renderAdminStats(); renderDashProjects(); populateSel();
     resetProjectForm(); showAdminTab('projects');
-  } catch(e) { toast('Error: '+e.message,true); }
+  } catch(e){toast('Error: '+e.message,true);}
   btn.disabled=false; btn.textContent=editingProjectId?'Save changes':'Add project';
 }
 
-function confirmDeleteProject() {
+function confirmDeleteProject(){
   deletingProjectId=editingProjectId;
   const p=projects.find(x=>x.id===deletingProjectId);
   const dc=donors.filter(d=>d.project_id===deletingProjectId).length;
@@ -640,9 +651,9 @@ function confirmDeleteProject() {
   document.getElementById('delete-overlay').classList.add('show');
 }
 
-function closeDeleteModal() { document.getElementById('delete-overlay').classList.remove('show'); deletingProjectId=null; }
+function closeDeleteModal(){document.getElementById('delete-overlay').classList.remove('show');deletingProjectId=null;}
 
-async function deleteProject() {
+async function deleteProject(){
   if(!deletingProjectId) return;
   const btn=document.getElementById('btn-confirm-delete');
   btn.disabled=true; btn.textContent='Deleting...';
@@ -650,14 +661,14 @@ async function deleteProject() {
     await sbApi('donors?project_id=eq.'+deletingProjectId,'DELETE');
     await sbApi('pledges?project_id=eq.'+deletingProjectId,'DELETE');
     await sbApi('projects?id=eq.'+deletingProjectId,'DELETE');
-    await loadData(); renderStats(); renderDashProjects(); populateSel();
+    await loadData(); renderAdminStats(); renderDashProjects(); populateSel();
     closeDeleteModal(); resetProjectForm(); showAdminTab('projects');
     toast('Project deleted');
-  } catch(e) { toast('Error: '+e.message,true); }
+  } catch(e){toast('Error: '+e.message,true);}
   btn.disabled=false; btn.textContent='Yes, delete';
 }
 
-function renderStats() {
+function renderAdminStats(){
   const raised=projects.reduce((s,p)=>s+(p.raised||0),0);
   const goal=projects.reduce((s,p)=>s+p.goal,0);
   const pledged=pledges.filter(pl=>pl.status==='pending').reduce((s,pl)=>s+pl.amount,0);
@@ -667,10 +678,10 @@ function renderStats() {
     <div class="stat-card"><div class="stat-label">Funding goal</div><div class="stat-value gold">$${goal.toLocaleString()}</div></div>`;
 }
 
-function pCard(p, showEdit=false) {
+function pCard(p,showEdit=false){
   const pct=Math.min(100,Math.round(((p.raised||0)/p.goal)*100));
   const pledgeAmt=pledges.filter(pl=>pl.project_id===p.id&&pl.status==='pending').reduce((s,pl)=>s+pl.amount,0);
-  const pledgePct=Math.min(100-pct, Math.round((pledgeAmt/p.goal)*100));
+  const pledgePct=Math.min(100-pct,Math.round((pledgeAmt/p.goal)*100));
   const dc=donors.filter(d=>d.project_id===p.id).length;
   const pc=pledges.filter(pl=>pl.project_id===p.id&&pl.status==='pending').length;
   const color=colorMap[p.color]||colorMap.default;
@@ -697,11 +708,11 @@ function pCard(p, showEdit=false) {
   </div>`;
 }
 
-function renderDashProjects() { document.getElementById('admin-projects-dash').innerHTML=projects.map(p=>pCard(p,false)).join('')||'<div class="empty-state">No projects yet</div>'; }
-function renderProjectsList() { document.getElementById('admin-projects-list').innerHTML=projects.map(p=>pCard(p,true)).join('')||'<div class="empty-state">No projects yet</div>'; }
-function viewProjectDonors(id) { showAdminTab('donors'); renderDonorTable(id); }
+function renderDashProjects(){document.getElementById('admin-projects-dash').innerHTML=projects.map(p=>pCard(p,false)).join('')||'<div class="empty-state">No projects yet</div>';}
+function renderProjectsList(){document.getElementById('admin-projects-list').innerHTML=projects.map(p=>pCard(p,true)).join('')||'<div class="empty-state">No projects yet</div>';}
+function viewProjectDonors(id){showAdminTab('donors');renderDonorTable(id);}
 
-function renderDonorTable(filter) {
+function renderDonorTable(filter){
   const list=filter?donors.filter(d=>d.project_id===filter):donors;
   document.getElementById('donor-tbody').innerHTML=list.map(d=>{
     const proj=projects.find(p=>p.id===d.project_id);
@@ -709,76 +720,66 @@ function renderDonorTable(filter) {
   }).join('')||'<tr><td colspan="4" class="empty-state">No donations yet</td></tr>';
 }
 
-function renderPledgesTable() {
+function renderPledgesTable(){
   document.getElementById('pledges-tbody').innerHTML=pledges.map(pl=>{
     const proj=projects.find(p=>p.id===pl.project_id);
     const isFulfilled=pl.status==='fulfilled';
-    return `<tr>
-      <td>${pl.name}</td>
-      <td><a href="mailto:${pl.email}" style="color:var(--blue)">${pl.email}</a></td>
-      <td>${proj?proj.name:'Unknown'}</td>
-      <td><span class="pledge-pill">$${pl.amount.toLocaleString()}</span></td>
-      <td>${pl.date}</td>
-      <td><span class="status-pill ${isFulfilled?'status-fulfilled':'status-pending'}" onclick="togglePledgeStatus(${pl.id},'${isFulfilled?'pending':'fulfilled'}')" title="Click to toggle">${isFulfilled?'Fulfilled':'Pending'}</span></td>
-    </tr>`;
+    return `<tr><td>${pl.name}</td><td><a href="mailto:${pl.email}" style="color:var(--blue)">${pl.email}</a></td><td>${proj?proj.name:'Unknown'}</td><td><span class="pledge-pill">$${pl.amount.toLocaleString()}</span></td><td>${pl.date}</td><td><span class="status-pill ${isFulfilled?'status-fulfilled':'status-pending'}" onclick="togglePledgeStatus(${pl.id},'${isFulfilled?'pending':'fulfilled'}')" title="Click to toggle">${isFulfilled?'Fulfilled':'Pending'}</span></td></tr>`;
   }).join('')||'<tr><td colspan="6" class="empty-state">No pledges yet</td></tr>';
 }
 
-async function togglePledgeStatus(id, newStatus) {
-  try {
-    await sbApi('pledges?id=eq.'+id,'PATCH',{status:newStatus});
-    await loadData(); renderPledgesTable(); renderStats();
-    toast('Pledge status updated!');
-  } catch(e) { toast('Error: '+e.message,true); }
+async function togglePledgeStatus(id,newStatus){
+  try{await sbApi('pledges?id=eq.'+id,'PATCH',{status:newStatus});await loadData();renderPledgesTable();renderAdminStats();toast('Pledge status updated!');}
+  catch(e){toast('Error: '+e.message,true);}
 }
 
-function populateSel() {
+function populateSel(){
   const s=document.getElementById('d-project');
   if(s) s.innerHTML=projects.map(p=>`<option value="${p.id}">${p.name}</option>`).join('');
 }
 
-async function addDonation() {
+async function addDonation(){
   const name=document.getElementById('d-name').value.trim();
   const amount=parseFloat(document.getElementById('d-amount').value);
   const pid=parseInt(document.getElementById('d-project').value);
   const date=document.getElementById('d-date').value;
-  if(!name||!amount||!date) { alert('Please fill in all fields'); return; }
+  if(!name||!amount||!date){alert('Please fill in all fields');return;}
   const btn=document.getElementById('btn-save-donation');
   btn.disabled=true; btn.textContent='Saving...';
-  try {
+  try{
     const proj=projects.find(p=>p.id===pid);
     await sbApi('donors','POST',{name,project_id:pid,amount,date});
     await sbApi('projects?id=eq.'+pid,'PATCH',{raised:(proj?.raised||0)+amount});
-    await loadData(); renderStats(); renderDashProjects(); populateSel();
+    await loadData(); renderAdminStats(); renderDashProjects(); populateSel();
     document.getElementById('d-name').value=''; document.getElementById('d-amount').value='';
     showAdminTab('dashboard'); toast('Donation saved!');
-  } catch(e) { toast('Error: '+e.message,true); }
+  }catch(e){toast('Error: '+e.message,true);}
   btn.disabled=false; btn.textContent='Save donation';
 }
 
-function exportCSV(type) {
-  let rows, data, filename;
-  if(type==='donations') {
+function exportCSV(type){
+  let rows,filename;
+  if(type==='donations'){
     rows=[['Donor Name','Project','Amount (USD)','Date']];
-    donors.forEach(d=>{const p=projects.find(x=>x.id===d.project_id); rows.push([d.name,p?p.name:'',d.amount,d.date]);});
+    donors.forEach(d=>{const p=projects.find(x=>x.id===d.project_id);rows.push([d.name,p?p.name:'',d.amount,d.date]);});
     filename='kenya-donations.csv';
-  } else {
+  }else{
     rows=[['Name','Email','Project','Amount (USD)','Date','Status']];
-    pledges.forEach(pl=>{const p=projects.find(x=>x.id===pl.project_id); rows.push([pl.name,pl.email,p?p.name:'',pl.amount,pl.date,pl.status]);});
+    pledges.forEach(pl=>{const p=projects.find(x=>x.id===pl.project_id);rows.push([pl.name,pl.email,p?p.name:'',pl.amount,pl.date,pl.status]);});
     filename='kenya-pledges.csv';
   }
   const csv=rows.map(r=>r.map(c=>`"${c}"`).join(',')).join('\n');
-  const a=document.createElement('a'); a.href=URL.createObjectURL(new Blob([csv],{type:'text/csv'})); a.download=filename; a.click();
+  const a=document.createElement('a');a.href=URL.createObjectURL(new Blob([csv],{type:'text/csv'}));a.download=filename;a.click();
 }
 
-function renderMyActivity() {
-  if(!currentUser?.name) return '';
+function renderMyActivity(){
+  if(!currentUser?.name){document.getElementById('my-activity-section').innerHTML='';return;}
   const myDonations=donors.filter(d=>d.name.toLowerCase()===currentUser.name.toLowerCase());
   const myPledges=pledges.filter(pl=>pl.name.toLowerCase()===currentUser.name.toLowerCase());
-  if(!myDonations.length&&!myPledges.length) return '';
+  if(!myDonations.length&&!myPledges.length){document.getElementById('my-activity-section').innerHTML='';return;}
   const totalGiven=myDonations.reduce((s,d)=>s+d.amount,0);
   const totalPledged=myPledges.filter(pl=>pl.status==='pending').reduce((s,pl)=>s+pl.amount,0);
-  return `<div class="my-activity"><h3>Your activity</h3>
+  document.getElementById('my-activity-section').innerHTML=`<div class="my-activity"><h3>Your activity</h3>
     ${myDonations.map(d=>{const proj=projects.find(p=>p.id===d.project_id);
       return `<div class="activity-item"><div><div class="activity-project">${proj?proj.name:'Unknown'}</div><div class="activity-date">${d.date}</div></div><span class="amount-pill">$${d.amount.toLocaleString()} given</span></div>`;}).join('')}
     ${myPledges.map(pl=>{const proj=projects.find(p=>p.id===pl.project_id);
@@ -790,14 +791,14 @@ function renderMyActivity() {
   </div>`;
 }
 
-function renderDonorView() {
+function renderDonorView(){
   const raised=projects.reduce((s,p)=>s+(p.raised||0),0);
   const pledged=pledges.filter(pl=>pl.status==='pending').reduce((s,pl)=>s+pl.amount,0);
   document.getElementById('hero-raised').textContent='$'+raised.toLocaleString();
   document.getElementById('hero-pledged').textContent='$'+pledged.toLocaleString();
   document.getElementById('hero-donors').textContent=donors.length;
   document.getElementById('hero-projects').textContent=projects.length;
-  document.getElementById('my-activity-section').innerHTML=renderMyActivity();
+  renderMyActivity();
   document.getElementById('donor-projects').innerHTML=projects.map(p=>{
     const pct=Math.min(100,Math.round(((p.raised||0)/p.goal)*100));
     const pledgeAmt=pledges.filter(pl=>pl.project_id===p.id&&pl.status==='pending').reduce((s,pl)=>s+pl.amount,0);
@@ -829,38 +830,40 @@ function renderDonorView() {
   }).join('');
 }
 
-function openActionModal(pid, mode) {
+function openActionModal(pid,mode){
   selAmount=null; selProjectId=pid; selMode=mode;
   const proj=projects.find(p=>p.id===pid);
   const isGive=mode==='give';
+  const prefillName=currentUser?.name||'';
+  const prefillEmail=currentUser?.email||'';
   document.getElementById('action-modal-content').innerHTML=`
     <h3>${proj.name}</h3>
     <p class="modal-sub">${proj.location}, Kenya</p>
     <div class="modal-tabs">
-      <button class="modal-tab ${!isGive?'':'active give'}" onclick="switchMode('give')">Give now</button>
-      <button class="modal-tab ${isGive?'':'active pledge'}" onclick="switchMode('pledge')">Pledge for later</button>
+      <button class="modal-tab ${isGive?'active give':''}" onclick="switchMode('give')">Give now</button>
+      <button class="modal-tab ${!isGive?'active pledge':''}" onclick="switchMode('pledge')">Pledge for later</button>
     </div>
     <div id="modal-give-section" style="display:${isGive?'block':'none'}">
       <div class="gateway-box">
-        <p>Ready to give? Click below to complete your donation securely through our payment gateway.</p>
+        <p>Ready to give? Click below to complete your donation securely.</p>
         <button class="btn-pay-gateway" onclick="window.open('${PAYMENT_GATEWAY_URL}','_blank')">Go to payment gateway →</button>
       </div>
-      <p style="font-size:12px;color:var(--text-muted);text-align:center;margin-bottom:12px">Or record a cash / bank transfer donation:</p>
+      <p style="font-size:12px;color:var(--text-muted);text-align:center;margin-bottom:12px">Or record a cash / bank transfer:</p>
       <div class="amount-grid">${[25,50,100,250,500,'Other'].map(a=>`<button class="amount-btn" onclick="pickAmt(this,${typeof a==='number'?a:'null'},'give')">${typeof a==='number'?'$'+a:a}</button>`).join('')}</div>
       <div id="custom-wrap-give" style="display:none" class="field"><label>Custom amount (USD)</label><input type="number" id="custom-amt-give" placeholder="Enter amount" min="1"></div>
-      <div class="field"><label>Your name</label><input type="text" id="give-name" placeholder="Full name" value="${currentUser?.name||''}"></div>
+      <div class="field"><label>Your name</label><input type="text" id="give-name" placeholder="Full name" value="${prefillName}"></div>
       <div class="form-actions">
         <button class="btn-cancel" onclick="closeActionModal()">Cancel</button>
         <button class="btn-submit" id="btn-confirm-give" onclick="confirmGive()">Record donation</button>
       </div>
     </div>
     <div id="modal-pledge-section" style="display:${!isGive?'block':'none'}">
-      <p style="font-size:13px;color:var(--text-muted);margin-bottom:14px">Make a commitment to give — we'll send you a reminder email when you're ready.</p>
+      <p style="font-size:13px;color:var(--text-muted);margin-bottom:14px">Make a commitment to give — we'll follow up with you by email.</p>
       <div class="amount-grid">${[25,50,100,250,500,'Other'].map(a=>`<button class="amount-btn" onclick="pickAmt(this,${typeof a==='number'?a:'null'},'pledge')">${typeof a==='number'?'$'+a:a}</button>`).join('')}</div>
       <div id="custom-wrap-pledge" style="display:none" class="field"><label>Custom amount (USD)</label><input type="number" id="custom-amt-pledge" placeholder="Enter amount" min="1"></div>
       <div class="form-row">
-        <div class="field"><label>Your name</label><input type="text" id="pledge-name" placeholder="Full name" value="${currentUser?.name||''}"></div>
-        <div class="field"><label>Your email</label><input type="email" id="pledge-email" placeholder="your@email.com" value="${currentUser?.email||''}"></div>
+        <div class="field"><label>Your name</label><input type="text" id="pledge-name" placeholder="Full name" value="${prefillName}"></div>
+        <div class="field"><label>Your email</label><input type="email" id="pledge-email" placeholder="your@email.com" value="${prefillEmail}"></div>
       </div>
       <div class="form-actions">
         <button class="btn-cancel" onclick="closeActionModal()">Cancel</button>
@@ -870,91 +873,95 @@ function openActionModal(pid, mode) {
   document.getElementById('action-overlay').classList.add('show');
 }
 
-function switchMode(mode) {
+function switchMode(mode){
   selMode=mode; selAmount=null;
   document.querySelectorAll('.modal-tab').forEach((t,i)=>{
     t.classList.remove('active','give','pledge');
-    if((i===0&&mode==='give')||(i===1&&mode==='pledge')) { t.classList.add('active',mode); }
+    if((i===0&&mode==='give')||(i===1&&mode==='pledge')){t.classList.add('active',mode);}
   });
   document.getElementById('modal-give-section').style.display=mode==='give'?'block':'none';
   document.getElementById('modal-pledge-section').style.display=mode==='pledge'?'block':'none';
 }
 
-function pickAmt(btn, amount, mode) {
+function pickAmt(btn,amount,mode){
   document.querySelectorAll('.amount-btn').forEach(b=>{b.classList.remove('selected','give','pledge');});
   btn.classList.add('selected',mode); selAmount=amount;
   document.getElementById('custom-wrap-give').style.display=(amount===null&&mode==='give')?'block':'none';
   document.getElementById('custom-wrap-pledge').style.display=(amount===null&&mode==='pledge')?'block':'none';
 }
 
-function closeActionModal() { document.getElementById('action-overlay').classList.remove('show'); }
+function closeActionModal(){document.getElementById('action-overlay').classList.remove('show');}
 
-async function confirmGive() {
+async function confirmGive(){
   const name=document.getElementById('give-name')?.value?.trim();
   const custom=document.getElementById('custom-amt-give')?.value;
   const amount=selAmount!==null?selAmount:parseFloat(custom);
-  if(!name) { alert('Please enter your name'); return; }
-  if(!amount||amount<1) { alert('Please select or enter an amount'); return; }
+  if(!name){alert('Please enter your name');return;}
+  if(!amount||amount<1){alert('Please select or enter an amount');return;}
   const btn=document.getElementById('btn-confirm-give');
   btn.disabled=true; btn.textContent='Saving...';
-  try {
+  try{
     const proj=projects.find(p=>p.id===selProjectId);
     const date=new Date().toISOString().split('T')[0];
     await sbApi('donors','POST',{name,project_id:selProjectId,amount,date});
     await sbApi('projects?id=eq.'+selProjectId,'PATCH',{raised:(proj?.raised||0)+amount});
-    await loadData();
+    await loadData(); renderDonorView();
     document.getElementById('action-modal-content').innerHTML=`
       <div class="success-content">
         <div class="success-icon give">✓</div>
         <div class="success-title">Thank you, ${name}!</div>
         <p class="success-text">Your gift of <strong>$${amount.toLocaleString()}</strong> to "${proj?.name}" has been recorded. God bless you!</p>
-        <button class="btn-submit" style="width:100%" onclick="closeActionModal();renderDonorView()">Done</button>
+        <button class="btn-submit" style="width:100%" onclick="closeActionModal()">Done</button>
       </div>`;
-  } catch(e) { btn.disabled=false; btn.textContent='Record donation'; toast('Error: '+e.message,true); }
+  }catch(e){btn.disabled=false;btn.textContent='Record donation';toast('Error: '+e.message,true);}
 }
 
-async function confirmPledge() {
+async function confirmPledge(){
   const name=document.getElementById('pledge-name')?.value?.trim();
   const email=document.getElementById('pledge-email')?.value?.trim();
   const custom=document.getElementById('custom-amt-pledge')?.value;
   const amount=selAmount!==null?selAmount:parseFloat(custom);
-  if(!name) { alert('Please enter your name'); return; }
-  if(!email||!email.includes('@')) { alert('Please enter a valid email address'); return; }
-  if(!amount||amount<1) { alert('Please select or enter an amount'); return; }
+  if(!name){alert('Please enter your name');return;}
+  if(!email||!email.includes('@')){alert('Please enter a valid email address');return;}
+  if(!amount||amount<1){alert('Please select or enter an amount');return;}
   const btn=document.getElementById('btn-confirm-pledge');
   btn.disabled=true; btn.textContent='Saving...';
-  try {
+  try{
     const proj=projects.find(p=>p.id===selProjectId);
     const date=new Date().toISOString().split('T')[0];
     await sbApi('pledges','POST',{name,email,project_id:selProjectId,amount,date,status:'pending'});
-    await loadData();
+    await loadData(); renderDonorView();
     document.getElementById('action-modal-content').innerHTML=`
       <div class="success-content">
         <div class="success-icon pledge">♡</div>
         <div class="success-title">Pledge received, ${name}!</div>
-        <p class="success-text">Your pledge of <strong>$${amount.toLocaleString()}</strong> to "${proj?.name}" has been recorded. We'll follow up at <strong>${email}</strong> when you're ready to give. Thank you!</p>
-        <button class="btn-submit" style="width:100%;background:var(--blue)" onclick="closeActionModal();renderDonorView()">Done</button>
+        <p class="success-text">Your pledge of <strong>$${amount.toLocaleString()}</strong> to "${proj?.name}" has been recorded. We'll follow up at <strong>${email}</strong>. Thank you!</p>
+        <button class="btn-submit" style="width:100%;background:var(--blue)" onclick="closeActionModal()">Done</button>
       </div>`;
-  } catch(e) { btn.disabled=false; btn.textContent='Submit pledge'; toast('Error: '+e.message,true); }
+  }catch(e){btn.disabled=false;btn.textContent='Submit pledge';toast('Error: '+e.message,true);}
 }
 
 document.getElementById('action-overlay').addEventListener('click',function(e){if(e.target===this)closeActionModal();});
 document.getElementById('delete-overlay').addEventListener('click',function(e){if(e.target===this)closeDeleteModal();});
+document.getElementById('auth-overlay').addEventListener('click',function(e){if(e.target===this)closeAuthModal();});
 
-window.addEventListener('load',()=>{
-  document.getElementById('loading-screen').style.display='none';
+window.addEventListener('load', async ()=>{
   const hash=window.location.hash;
-  if(hash.includes('type=recovery')||hash.includes('access_token')) {
+  if(hash.includes('type=recovery')){
     const params=new URLSearchParams(hash.replace('#',''));
     const token=params.get('access_token');
-    if(token&&params.get('type')==='recovery') {
+    if(token&&params.get('type')==='recovery'){
       sbSession={access_token:token};
-      document.getElementById('auth-screen').style.display='flex';
-      showPanel('reset'); return;
+      document.getElementById('loading-screen').style.display='none';
+      showAuthPanel('reset');
+      document.getElementById('auth-overlay').classList.add('show');
+      return;
     }
   }
-  document.getElementById('auth-screen').style.display='flex';
-  showPanel('login');
+  try { await loadData(); } catch(e) { console.error(e); }
+  document.getElementById('loading-screen').style.display='none';
+  renderDonorView();
+  updateNav();
 });
 </script>
 </body>
